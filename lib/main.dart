@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screen/splash.dart';
+import 'features/user_auth/presentation/screen/splash.dart';
 // import 'package:get/get.dart';
 
 
