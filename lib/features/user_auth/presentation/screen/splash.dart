@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'signup.dart';
+import 'login.dart';
+// import 'signup.dart';
 
 class Mysplash extends StatefulWidget {
   const Mysplash({super.key, required child});
@@ -40,7 +41,7 @@ class _MysplashState extends State<Mysplash> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SignUpPage()),
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
                   );
                 }
             ),
