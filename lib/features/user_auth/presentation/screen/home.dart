@@ -21,13 +21,13 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         elevation: 0.0,
         backgroundColor: Colors.blue,
-        //   leading: IconButton(
-        //     icon: const Icon(
-        //       Icons.notifications_none,
-        //       color: Colors.black,
-        //     ),
-        //     onPressed: () {  },
-        //   ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.comment),
+            tooltip: 'Comment Icon',
+            onPressed: () {},
+          ), //IconButton
+          ],
       ),
 
       drawer: Drawer(
