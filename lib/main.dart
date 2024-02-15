@@ -11,7 +11,7 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (kIsWeb) {
     await Firebase.initializeApp(
-      options: FirebaseOptions(
+      options: const FirebaseOptions(
         apiKey: "AIzaSyDebQ3e70COyu_H60itGFIhjyHkgsR2_5c",
         appId: "1:561970985581:web:defaf652136d79ed9c1d64",
         messagingSenderId: "561970985581",
@@ -20,7 +20,13 @@ Future main() async {
       ),
     );
   } else {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+        options: const FirebaseOptions(
+      apiKey: "AIzaSyDebQ3e70COyu_H60itGFIhjyHkgsR2_5c",
+      appId: "1:561970985581:web:defaf652136d79ed9c1d64",
+      messagingSenderId: "561970985581",
+      projectId: "flutter-signup-2bbe1",
+    ));
   }
   runApp(MyApp());
 }
@@ -28,18 +34,17 @@ Future main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Firebase',
       routes: {
-        '/': (context) => Mysplash(
-          // Here, you can decide whether to show the LoginPage or HomePage based on user authentication
-          child: LoginPage(),
-        ),
-        '/login': (context) => LoginPage(),
-        '/signUp': (context) => SignUpPage(),
-        '/home': (context) => HomePage(),
+        '/': (context) => const Mysplash(
+              // Here, you can decide whether to show the LoginPage or HomePage based on user authentication
+              child: LoginPage(),
+            ),
+        '/login': (context) => const LoginPage(),
+        '/signUp': (context) => const SignUpPage(),
+        '/home': (context) => const HomePage(),
       },
     );
   }
