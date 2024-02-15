@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../../global/toast.dart';
-import '../../widgets/form_container_widget.dart';
-import 'signup.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:work__fy/features/user_auth/presentation/screen/signup.dart';
 
+import '../../../../global/toast.dart';
 import '../../firebase_auth_implementation/firebase_auth_services.dart';
+import '../../widgets/form_container_widget.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

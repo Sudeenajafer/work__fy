@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'signup.dart';
 
 class Mysplash extends StatefulWidget {
-  const Mysplash({super.key});
+  const Mysplash({super.key, required child});
   @override
   State<Mysplash> createState() => _MysplashState();
 }
