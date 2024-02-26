@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'features/user_auth/presentation/screen/intro.dart';
 // Import Firebase Auth
 import 'features/user_auth/presentation/screen/home.dart';
 import 'features/user_auth/presentation/screen/login.dart';
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const Mysplash(
               // Here, you can decide whether to show the LoginPage or HomePage based on user authentication
-               child: LoginPage(),
+               child: Myintro(child: null,),
             ),
         '/login': (context) => const LoginPage(),
         '/signUp': (context) => const SignUpPage(),
