@@ -23,7 +23,7 @@ class _MysplashState extends State<Mysplash> {
                 color: Colors.blue,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Text(
+              child: const Text(
                 'WF',
                 style: TextStyle(
                   color: Colors.white,
@@ -37,7 +37,7 @@ class _MysplashState extends State<Mysplash> {
             bottom: 16,
             right: 16,
             child: IconButton(
-                icon: Icon(Icons.arrow_forward),
+                icon: const Icon(Icons.arrow_forward),
                 onPressed: () {
                   Navigator.push(
                     context,

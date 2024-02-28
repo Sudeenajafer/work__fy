@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'features/user_auth/presentation/screen/intro.dart';
 // Import Firebase Auth
 import 'features/user_auth/presentation/screen/home.dart';
-import 'features/user_auth/presentation/screen/login.dart';
-import 'features/user_auth/presentation/screen/signup.dart';
 import 'features/user_auth/presentation/screen/splash.dart';
 
 Future main() async {
@@ -29,10 +27,12 @@ Future main() async {
       projectId: "flutter-signup-2bbe1",
     ));
   }
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -43,8 +43,8 @@ class MyApp extends StatelessWidget {
               // Here, you can decide whether to show the LoginPage or HomePage based on user authentication
                child: Myintro(child: null,),
             ),
-        '/login': (context) => const LoginPage(),
-        '/signUp': (context) => const SignUpPage(),
+       // '/login': (context) => const LoginPage(),
+        //'/signUp': (context) => const SignUpPage(),
         '/home': (context) => const HomePage(),
       },
     );

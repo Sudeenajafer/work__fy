@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -20,8 +19,8 @@ class _LoginPageState extends State<LoginPage> {
   bool _isSigning = false;
   final FirebaseAuthService _auth = FirebaseAuthService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -183,11 +182,11 @@ class _LoginPageState extends State<LoginPage> {
 
   _signInWithGoogle()async{
 
-    final GoogleSignIn _googleSignIn = GoogleSignIn();
+    final GoogleSignIn googleSignIn = GoogleSignIn();
 
     try {
 
-      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
 
       if(googleSignInAccount != null ){
         final GoogleSignInAuthentication googleSignInAuthentication = await

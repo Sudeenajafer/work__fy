@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 //import 'home.dart';
-// import 'signup.dart';
+ import 'login.dart';
 
 class Myintro extends StatefulWidget {
   const Myintro({super.key, required child});
@@ -21,14 +21,36 @@ class _MyintroState extends State<Myintro> {
               width: double.infinity,
               height: 200,
               color: Colors.blueAccent,
-              alignment: Alignment.center,
+              alignment: Alignment.topLeft,
               margin: const EdgeInsets.all(20),
               padding: const EdgeInsets.all(30),
-                child: const Text(
-                    'WORKERS HIRING PORTAL',
-                    style: TextStyle(fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold),
+              child :Column(
+
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                 const Text(
+                  'WORKERS HIRING PORTAL',
+                  style: TextStyle(fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold),
+                ),
+                  const Spacer(), // Adds empty space to push the button to the bottom
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                        );
+                      },
+                      child: const Text('Register'),
+                    ),
                   ),
+],
+              ),
             ),
+
             const SizedBox(height: 20), // Add some space between the containers
             Container(
               width: double.infinity,
@@ -37,11 +59,32 @@ class _MyintroState extends State<Myintro> {
               alignment: Alignment.topLeft,
               margin: const EdgeInsets.all(20),
               padding: const EdgeInsets.all(30),
-              child: const Text(
-                  'WORKERS FINDING PORTAL',
-                  style: TextStyle(fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold),
-                ),
+              child :Column(
+
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'WORKERS HIRING PORTAL',
+                    style: TextStyle(fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(), // Adds empty space to push the button to the bottom
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                        );
+                      },
+                      child: const Text('Login '),
+                    ),
+                  ),
+                ],
               ),
+            ),
           ],
         ),
       ),
