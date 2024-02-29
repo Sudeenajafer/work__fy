@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-//import 'home.dart';
+// import 'register.dart';
  import 'login.dart';
 
 class Myintro extends StatefulWidget {
@@ -40,7 +40,7 @@ class _MyintroState extends State<Myintro> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
+                            builder: (context) =>  LoginPage(),
                           ),
                         );
                       },
@@ -64,7 +64,7 @@ class _MyintroState extends State<Myintro> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'WORKERS HIRING PORTAL',
+                    'WORKERS FINDING PORTAL',
                     style: TextStyle(fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold),
                   ),
                   const Spacer(), // Adds empty space to push the button to the bottom
@@ -75,7 +75,7 @@ class _MyintroState extends State<Myintro> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
+                            builder: (context) => LoginPage(),
                           ),
                         );
                       },

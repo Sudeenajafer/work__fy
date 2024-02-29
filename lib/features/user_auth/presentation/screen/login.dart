@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:work__fy/features/user_auth/presentation/screen/signup.dart';
+import '../../widgets/form_container_widget.dart';
+import '../../../../global/toast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:work__fy/features/user_auth/presentation/screen/signup.dart';
 
-import '../../../../global/toast.dart';
 import '../../firebase_auth_implementation/firebase_auth_services.dart';
-import '../../widgets/form_container_widget.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,8 +20,8 @@ class _LoginPageState extends State<LoginPage> {
   bool _isSigning = false;
   final FirebaseAuthService _auth = FirebaseAuthService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -34,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text("Login"),
+        title: Text("Login"),
       ),
       body: Center(
         child: Padding(
@@ -42,11 +43,11 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
+              Text(
                 "Login",
                 style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(
+              SizedBox(
                 height: 30,
               ),
               FormContainerWidget(
@@ -54,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                 hintText: "Email",
                 isPasswordField: false,
               ),
-              const SizedBox(
+              SizedBox(
                 height: 10,
               ),
               FormContainerWidget(
@@ -62,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                 hintText: "Password",
                 isPasswordField: true,
               ),
-              const SizedBox(
+              SizedBox(
                 height: 30,
               ),
               GestureDetector(
@@ -77,8 +78,8 @@ class _LoginPageState extends State<LoginPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
-                    child: _isSigning ? const CircularProgressIndicator(
-                      color: Colors.white,) : const Text(
+                    child: _isSigning ? CircularProgressIndicator(
+                      color: Colors.white,) : Text(
                       "Login",
                       style: TextStyle(
                         color: Colors.white,
@@ -88,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10,),
+              SizedBox(height: 10,),
               GestureDetector(
                 onTap: () {
                   _signInWithGoogle();
@@ -98,10 +99,10 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   height: 45,
                   decoration: BoxDecoration(
-                    color: Colors.orangeAccent,
+                    color: Colors.red,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -121,26 +122,26 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
 
-              const SizedBox(
+              SizedBox(
                 height: 20,
               ),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account?"),
-                  const SizedBox(
+                  Text("Don't have an account?"),
+                  SizedBox(
                     width: 5,
                   ),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => const SignUpPage()),
+                        MaterialPageRoute(builder: (context) => SignUpPage()),
                             (route) => false,
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       "Sign Up",
                       style: TextStyle(
                         color: Colors.blue,
@@ -182,11 +183,11 @@ class _LoginPageState extends State<LoginPage> {
 
   _signInWithGoogle()async{
 
-    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignIn _googleSignIn = GoogleSignIn();
 
     try {
 
-      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
 
       if(googleSignInAccount != null ){
         final GoogleSignInAuthentication googleSignInAuthentication = await
