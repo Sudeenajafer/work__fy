@@ -61,61 +61,64 @@ class _HomePageState extends State<HomePage> {
             ),          ],
         ),
       ),
-      body:SingleChildScrollView(
-        child: Column(
-          children: [
-            WorkerCard(
-              image: 'assets/plumber.png',
-              name: 'John the Plumber',
-              profession: 'Plumbing Expert',
-            ),
-            WorkerCard(
-              image: 'assets/electrician.png',
-              name: 'Emma the Electrician',
-              profession: 'Electrical Specialist',
-            ),
-            // Add more WorkerCard widgets for other workers
-          ],
+      body: Center(
+        child: Container(
+          color: Colors.blue,
+          padding: EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'What are you looking for',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 20.0),
+              SubContainer(text: 'Job 1'),
+              SubContainer(text: 'Job 2'),
+              SubContainer(text: 'Job 3'),
+              SubContainer(text: 'Job 4'),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.search),
-        onPressed: () => showSearch(context: context, delegate: Search()),
+    );
+  }
+}
+
+class SubContainer extends StatelessWidget {
+  final String text;
+
+  SubContainer({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10.0),
+      padding: EdgeInsets.all(15.0),
+      color: Colors.white,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 18.0,
+          fontWeight: FontWeight.bold,
+        ),
       ),
+    );
+  }
+}
+
+
+
+      // floatingActionButton: FloatingActionButton(
+      //   child: const Icon(Icons.search),
+      //   onPressed: () => showSearch(context: context, delegate: Search()),
+      // ),
 
     );
   }
 }
-        class WorkerCard extends StatelessWidget {
-    final String image;
-    final String name;
-    final String profession;
-
-    WorkerCard({required this.image, required this.name, required this.profession});
-
-    @override
-    Widget build(BuildContext context) {
-    return Container(
-    margin: EdgeInsets.all(16.0),
-    padding: EdgeInsets.all(16.0),
-    decoration: BoxDecoration(
-    color: Colors.grey[200],
-    borderRadius: BorderRadius.circular(10.0),
-    ),
-    child: Column(
-    children: [
-    Image.asset(image, height: 100),
-    SizedBox(height: 10),
-    Text(
-    name,
-    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-    ),
-    Text(
-    profession,
-    style: TextStyle(fontSize: 14, color: Colors.grey),
-    ),
-    ],
-    ),
-    );
-    }
-    }
