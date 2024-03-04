@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:work__fy/features/user_auth/presentation/screen/signup.dart';
 // import 'register.dart';
  import 'login.dart';
 
@@ -36,17 +37,32 @@ class _MyintroState extends State<Myintro> {
                 ),
                   const Spacer(), // Adds empty space to push the button to the bottom
                   Align(
-                    alignment: Alignment.bottomRight,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>  LoginPage(),
-                          ),
-                        );
-                      },
-                      child: const Text('Register'),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) =>  LoginPage(),
+                            //   ),
+                            // );
+                          },
+                          child: Text('Register'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) =>  LoginPage(),
+                            //   ),
+                            // );
+                          },
+                          child: Text('Login'),
+                        ),
+                      ],
                     ),
                   ),
 ],
@@ -79,17 +95,32 @@ class _MyintroState extends State<Myintro> {
 
                   const Spacer(), // Adds empty space to push the button to the bottom
                   Align(
-                    alignment: Alignment.bottomRight,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LoginPage(),
-                          ),
-                        );
-                      },
-                      child: const Text('Login '),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>  SignUpPage(),
+                              ),
+                            );
+                          },
+                          child: Text('SignUp'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>  LoginPage(),
+                              ),
+                            );
+                          },
+                          child: Text('Login'),
+                        ),
+                      ],
                     ),
                   ),
                 ],

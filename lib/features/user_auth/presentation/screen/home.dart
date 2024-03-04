@@ -11,6 +11,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+
+  // List of pages to navigate to
+  final List<Widget> _pages = [
+    FirstPage(),
+    SecondPage(),
+    ThirdPage(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,102 +70,200 @@ class _HomePageState extends State<HomePage> {
             ),          ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-        padding: EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              Container(
-                child: Center(
-                child: Text('Container 1'),
-              ),
-              height: 250,
-              padding: EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0), // Border radius
-              border: Border.all(
-                color: Colors.black, // Border color
-                width: 2.0, // Border width
-              ),
-                color: Colors.blue,
-              ),
-              ),
-              SizedBox(height: 16.0),
-              Container(
-                child: Center(
-                  child: Text('Container 2'),
-                ),
-                height: 250,
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0), // Border radius
-                  border: Border.all(
-                    color: Colors.black, // Border color
-                    width: 2.0, // Border width
-                  ),
-                color: Colors.green,
-                ),
-              ),
-              SizedBox(height: 16.0),
-              Container(
-                child: Center(
-                  child: Text('Container 3'),
-                ),
-                height: 250,
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0), // Border radius
-                  border: Border.all(
-                    color: Colors.black, // Border color
-                    width: 2.0, // Border width
-                  ),
-                color: Colors.orange,
-                ),
-              ),
-              SizedBox(height: 16.0),
-              Container(
-                child: Center(
-                  child: Text('Container 4'),
-                ),
-                height: 250,
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0), // Border radius
-                  border: Border.all(
-                    color: Colors.black, // Border color
-                    width: 2.0, // Border width
-                  ),
-                color: Colors.red,
-                ),
-              ),
-              SizedBox(height: 16.0),
-              Container(
-                child: Center(
-                  child: Text('Container 5'),
-                ),
-                height: 250,
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0), // Border radius
-                  border: Border.all(
-                    color: Colors.black, // Border color
-                    width: 2.0, // Border width
-                  ),
-                color: Colors.purple,
-                ),
-              ),
-            ],
-            //
-            // child:floatingActionButton: FloatingActionButton(
-            //   child: const Icon(Icons.search),
-            //   onPressed: () => showSearch(context: context, delegate: Search()),
-            // ),
+      body: _pages[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.category),
+            label: 'Available Services',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Booking',
+          ),
+        ],
+      ),
+    );
+  }
+}
+class FirstPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+  child: Container(
+  padding: EdgeInsets.all(16.0),
+    child: Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(4.0),
+          child: Text('  What are you looking for...',
+            style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w900,
+          ),),
+          width: double.infinity,
+          height: 40,
+        ),
+        SizedBox(height: 16.0),
+        Container(
+          height: 250,
+          decoration: BoxDecoration(
+            // borderRadius: BorderRadius.circular(20.0), // Border radius
+            border: Border.all(
+              color: Colors.black,
+              width: 2.0,
+            ),
+          ),
+            child: Image.network('https://newvideomarketing.com/wp-content/uploads/2017/06/plumber_woman_animated.jpg',
+              fit: BoxFit.cover,
+            ),
+        ),
+        SizedBox(height: 16.0),
+        Container(
+          padding: EdgeInsets.all(4.0),
+          child: Text('A plumber',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+            ),),
+          width: double.infinity,
+          height: 30,
+        ),
+        SizedBox(height: 16.0),
+        Container(
+          height: 250,
+          decoration: BoxDecoration(
+            // borderRadius: BorderRadius.circular(10.0), // Border radius
+            border: Border.all(
+              color: Colors.black, // Border color
+            ),
+          ),
+          child: Image.network('https://i.ytimg.com/vi/GlzvfaiJqqg/maxresdefault.jpg',
+            fit: BoxFit.cover,
           ),
         ),
-      ),
+        Container(
+          padding: EdgeInsets.all(4.0),
+          child: Text('An Electrician',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+            ),),
+          width: double.infinity,
+          height: 30,
+        ),
+        SizedBox(height: 16.0),
+        Container(
+          height: 250,
+          decoration: BoxDecoration(
+            // borderRadius: BorderRadius.circular(10.0), // Border radius
+            border: Border.all(
+              color: Colors.black, // Border color
+            ),
+          ),
+          child: Image.network('https://clipartmag.com/images/mechanic-clipart-13.png',
+            fit: BoxFit.cover,
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Container(
+          padding: EdgeInsets.all(4.0),
+          child: Text('A Mechanic',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+            ),),
+          width: double.infinity,
+          height: 30,
+        ),
+        SizedBox(height: 16.0),
+        Container(
+          height: 250,
+          decoration: BoxDecoration(
+            // borderRadius: BorderRadius.circular(10.0), // Border radius
+            border: Border.all(
+              color: Colors.black, // Border color
+            ),
+          ),
+          child: Image.network('https://marketingkingss.online/wp-content/uploads/2021/04/GracefulShinyHeifer-max-1mb.gif',
+            fit: BoxFit.cover,
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Container(
+          padding: EdgeInsets.all(4.0),
+          child: Text('A Painter',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+            ),),
+          width: double.infinity,
+          height: 30,
+        ),
+        SizedBox(height: 16.0),
+        Container(
+          height: 250,
+          decoration: BoxDecoration(
+            // borderRadius: BorderRadius.circular(10.0), // Border radius
+            border: Border.all(
+              color: Colors.black, // Border color
+            ),
+          ),
+          child: Image.network('https://i.ytimg.com/vi/WlR1CqjVRJk/maxresdefault.jpg',
+            fit: BoxFit.cover,
+          ),
+        ),
+        SizedBox(height: 16.0),
+        Container(
+          padding: EdgeInsets.all(4.0),
+          child: Text('A Floor Cleaner',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+            ),),
+          width: double.infinity,
+          height: 30,
+        ),
+      ],
+      //
+      // child:floatingActionButton: FloatingActionButton(
+      //   child: const Icon(Icons.search),
+      //   onPressed: () => showSearch(context: context, delegate: Search()),
+      // ),
+    ),
+  ),
+);
+
+        }
+}
+
+class SecondPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('Available Services'),
+    );
+  }
+}
+
+class ThirdPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('Booking'),
     );
   }
 }
 
 
-
+//
