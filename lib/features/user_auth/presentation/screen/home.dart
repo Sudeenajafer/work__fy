@@ -61,28 +61,96 @@ class _HomePageState extends State<HomePage> {
             ),          ],
         ),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Container(
-          color: Colors.blue,
-          padding: EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                'What are you looking for',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              Container(
+                child: Center(
+                child: Text('Container 1'),
+              ),
+              height: 250,
+              padding: EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0), // Border radius
+              border: Border.all(
+                color: Colors.black, // Border color
+                width: 2.0, // Border width
+              ),
+                color: Colors.blue,
+              ),
+              ),
+              SizedBox(height: 16.0),
+              Container(
+                child: Center(
+                  child: Text('Container 2'),
+                ),
+                height: 250,
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0), // Border radius
+                  border: Border.all(
+                    color: Colors.black, // Border color
+                    width: 2.0, // Border width
+                  ),
+                color: Colors.green,
                 ),
               ),
-              SizedBox(height: 20.0),
-              SubContainer(text: 'Job 1'),
-              SubContainer(text: 'Job 2'),
-              SubContainer(text: 'Job 3'),
-              SubContainer(text: 'Job 4'),
+              SizedBox(height: 16.0),
+              Container(
+                child: Center(
+                  child: Text('Container 3'),
+                ),
+                height: 250,
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0), // Border radius
+                  border: Border.all(
+                    color: Colors.black, // Border color
+                    width: 2.0, // Border width
+                  ),
+                color: Colors.orange,
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Container(
+                child: Center(
+                  child: Text('Container 4'),
+                ),
+                height: 250,
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0), // Border radius
+                  border: Border.all(
+                    color: Colors.black, // Border color
+                    width: 2.0, // Border width
+                  ),
+                color: Colors.red,
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Container(
+                child: Center(
+                  child: Text('Container 5'),
+                ),
+                height: 250,
+                padding: EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0), // Border radius
+                  border: Border.all(
+                    color: Colors.black, // Border color
+                    width: 2.0, // Border width
+                  ),
+                color: Colors.purple,
+                ),
+              ),
             ],
+            //
+            // child:floatingActionButton: FloatingActionButton(
+            //   child: const Icon(Icons.search),
+            //   onPressed: () => showSearch(context: context, delegate: Search()),
+            // ),
           ),
         ),
       ),
@@ -90,35 +158,5 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class SubContainer extends StatelessWidget {
-  final String text;
-
-  SubContainer({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10.0),
-      padding: EdgeInsets.all(15.0),
-      color: Colors.white,
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 18.0,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-}
 
 
-
-      // floatingActionButton: FloatingActionButton(
-      //   child: const Icon(Icons.search),
-      //   onPressed: () => showSearch(context: context, delegate: Search()),
-      // ),
-
-    );
-  }
-}

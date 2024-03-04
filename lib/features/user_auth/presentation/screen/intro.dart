@@ -18,18 +18,20 @@ class _MyintroState extends State<Myintro> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: double.infinity,
-              height: 200,
-              color: Colors.blueAccent,
               alignment: Alignment.topLeft,
               margin: const EdgeInsets.all(20),
-              padding: const EdgeInsets.all(30),
+              padding: EdgeInsets.all(30.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Colors.blueAccent,
+              ),
+              width: double.infinity,
+              height: 200,
               child :Column(
-
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                  const Text(
-                  'WORKERS HIRING PORTAL',
+                  'EMPLOYEES PORTAL',
                   style: TextStyle(fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold),
                 ),
                   const Spacer(), // Adds empty space to push the button to the bottom
@@ -53,20 +55,28 @@ class _MyintroState extends State<Myintro> {
 
             const SizedBox(height: 20), // Add some space between the containers
             Container(
+              margin: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(30.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Colors.blueAccent,
+              ),
               width: double.infinity,
               height: 200,
-              color: Colors.blueAccent,
-              alignment: Alignment.topLeft,
-              margin: const EdgeInsets.all(20),
-              padding: const EdgeInsets.all(30),
+
+              // alignment: Alignment.topLeft,
+
               child :Column(
 
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // alignment: Alignment.topLeft,
+
                   const Text(
-                    'WORKERS FINDING PORTAL',
+                    'HIRING PORTAL',
                     style: TextStyle(fontSize: 30,color: Colors.white,fontWeight: FontWeight.bold),
                   ),
+
                   const Spacer(), // Adds empty space to push the button to the bottom
                   Align(
                     alignment: Alignment.bottomRight,
