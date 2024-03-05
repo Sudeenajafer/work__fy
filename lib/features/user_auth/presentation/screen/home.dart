@@ -25,8 +25,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('WorkiFy'),
-        // style: TextStyle(color: Colors.black),
+        title: const Text('WorkiFy',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold
+        )),
+        // ,
         centerTitle: true,
         elevation: 0.0,
         backgroundColor: Colors.blue,
@@ -131,13 +135,26 @@ class FirstPage extends StatelessWidget {
         SizedBox(height: 16.0),
         Container(
           padding: EdgeInsets.all(4.0),
-          child: Text('A plumber',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
-            ),),
           width: double.infinity,
           height: 30,
+          child: Row(
+            children: [
+              Text(
+                'Plumber',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                ),              ),
+              Spacer(), // Spacer widget to push the icon button to the end of the row
+              IconButton(
+                icon: Icon(Icons.arrow_forward),
+                iconSize: 20.0, // Set the icon size as per your requirement
+                onPressed: () {
+                },
+              ),
+            ],
+          ),
+
         ),
         SizedBox(height: 16.0),
         Container(
@@ -145,22 +162,36 @@ class FirstPage extends StatelessWidget {
           decoration: BoxDecoration(
             // borderRadius: BorderRadius.circular(10.0), // Border radius
             border: Border.all(
-              color: Colors.black, // Border color
+              color: Colors.black,
+              width: 2.0,
             ),
           ),
           child: Image.network('https://i.ytimg.com/vi/GlzvfaiJqqg/maxresdefault.jpg',
             fit: BoxFit.cover,
           ),
         ),
+        SizedBox(height: 16.0),
         Container(
           padding: EdgeInsets.all(4.0),
-          child: Text('An Electrician',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
-            ),),
           width: double.infinity,
           height: 30,
+          child: Row(
+            children: [
+              Text(
+                'Electrician',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                ),              ),
+              Spacer(), // Spacer widget to push the icon button to the end of the row
+              IconButton(
+                icon: Icon(Icons.arrow_forward),
+                iconSize: 20.0, // Set the icon size as per your requirement
+                onPressed: () {
+                },
+              ),
+            ],
+          ),
         ),
         SizedBox(height: 16.0),
         Container(
@@ -169,6 +200,7 @@ class FirstPage extends StatelessWidget {
             // borderRadius: BorderRadius.circular(10.0), // Border radius
             border: Border.all(
               color: Colors.black, // Border color
+              width: 2.0,
             ),
           ),
           child: Image.network('https://clipartmag.com/images/mechanic-clipart-13.png',
@@ -178,13 +210,25 @@ class FirstPage extends StatelessWidget {
         SizedBox(height: 16.0),
         Container(
           padding: EdgeInsets.all(4.0),
-          child: Text('A Mechanic',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
-            ),),
           width: double.infinity,
           height: 30,
+          child: Row(
+            children: [
+              Text(
+                'Mechanic',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                ),              ),
+              Spacer(), // Spacer widget to push the icon button to the end of the row
+              IconButton(
+                icon: Icon(Icons.arrow_forward),
+                iconSize: 20.0, // Set the icon size as per your requirement
+                onPressed: () {
+                },
+              ),
+            ],
+          ),
         ),
         SizedBox(height: 16.0),
         Container(
@@ -192,23 +236,36 @@ class FirstPage extends StatelessWidget {
           decoration: BoxDecoration(
             // borderRadius: BorderRadius.circular(10.0), // Border radius
             border: Border.all(
-              color: Colors.black, // Border color
+              color: Colors.black,
+              width: 2.0,
             ),
           ),
-          child: Image.network('https://marketingkingss.online/wp-content/uploads/2021/04/GracefulShinyHeifer-max-1mb.gif',
+          child: Image.network('http://pluspng.com/img-png/painting-png-painting-png-file-684.png',
             fit: BoxFit.cover,
           ),
         ),
         SizedBox(height: 16.0),
         Container(
           padding: EdgeInsets.all(4.0),
-          child: Text('A Painter',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
-            ),),
           width: double.infinity,
           height: 30,
+          child: Row(
+            children: [
+              Text(
+                'Painter',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                ),              ),
+              Spacer(), // Spacer widget to push the icon button to the end of the row
+              IconButton(
+                icon: Icon(Icons.arrow_forward),
+                iconSize: 20.0, // Set the icon size as per your requirement
+                onPressed: () {
+                },
+              ),
+            ],
+          ),
         ),
         SizedBox(height: 16.0),
         Container(
@@ -217,6 +274,7 @@ class FirstPage extends StatelessWidget {
             // borderRadius: BorderRadius.circular(10.0), // Border radius
             border: Border.all(
               color: Colors.black, // Border color
+              width: 2.0,
             ),
           ),
           child: Image.network('https://i.ytimg.com/vi/WlR1CqjVRJk/maxresdefault.jpg',
@@ -226,13 +284,25 @@ class FirstPage extends StatelessWidget {
         SizedBox(height: 16.0),
         Container(
           padding: EdgeInsets.all(4.0),
-          child: Text('A Floor Cleaner',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
-            ),),
           width: double.infinity,
           height: 30,
+          child: Row(
+            children: [
+              Text(
+                'House Keeping',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                ),              ),
+              Spacer(), // Spacer widget to push the icon button to the end of the row
+              IconButton(
+                icon: Icon(Icons.arrow_forward),
+                iconSize: 20.0, // Set the icon size as per your requirement
+                onPressed: () {
+                },
+              ),
+            ],
+          ),
         ),
       ],
       //
