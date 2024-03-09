@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -127,6 +128,13 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _signUp() async {
+    CollectionReference collRef =FirebaseFirestore.instance.collection('user');
+    collRef.add({
+      'name':_usernameController.text,
+      'email':_emailController.text,
+      'password':_passwordController.text,
+
+    });
 
     setState(() {
       isSigningUp = true;
