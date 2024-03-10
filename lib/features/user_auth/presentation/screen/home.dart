@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
             ),          ],
         ),
       ),
-      body: _pages[_currentIndex],
+      body:_pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -101,24 +101,106 @@ class _HomePageState extends State<HomePage> {
   }
 }
 class FirstPage extends StatelessWidget {
+  TextEditingController _searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+
     return SingleChildScrollView(
   child: Container(
   padding: EdgeInsets.all(16.0),
     child: Column(
       children: [
         Container(
-          padding: EdgeInsets.all(4.0),
-          child: Text('  What are you looking for...',
-            style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w900,
-          ),),
+          padding: EdgeInsets.all(2.0),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              border: Border.all(color: Colors.grey), // Border color
+            ),
+          child: Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              SizedBox(width: 8.0), // Adjust spacing between items
+              Expanded(
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'What are you looking for...',
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  // Handle search icon pressed
+                  // You can customize this action
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.clear),
+                onPressed: () {
+                  // Handle clear icon pressed
+                  // You can customize this action
+                },
+              ),
+            ],
+          ),
+          // child: Text('search here...',
+          //   style: TextStyle(
+          //   fontSize: 20,
+          //   fontWeight: FontWeight.w900,
+          // ),),
           width: double.infinity,
           height: 40,
         ),
         SizedBox(height: 16.0),
+        // GestureDetector(
+        //   onTap: ()  => showSearch(context: context, delegate: Search()),
+        //   child: Container(
+        //     padding: EdgeInsets.all(16.0),
+        //     child: Row(
+        //       children: [
+        //         IconButton(
+        //           icon: Icon(Icons.arrow_back),
+        //           onPressed: () {
+        //             // Handle back button action
+        //             Navigator.pop(context);
+        //           },
+        //         ),
+        //         Expanded(
+        //           child: TextField(
+        //             controller: _searchController,
+        //             decoration: InputDecoration(
+        //               hintText: 'Search...',
+        //               border: OutlineInputBorder(),
+        //             ),
+        //           ),
+        //         ),
+        //         IconButton(
+        //           icon: Icon(Icons.clear),
+        //           onPressed: () {
+        //             // Clear the search text
+        //             _searchController.clear();
+        //           },
+        //         ),
+        //         IconButton(
+        //           icon: Icon(Icons.search),
+        //           onPressed: () {
+        //             // Handle search button action
+        //             // You can use _searchController.text for the search query
+        //             print('Search: ${_searchController.text}');
+        //           },
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+        // SizedBox(height: 16.0),
         Container(
           height: 250,
           decoration: BoxDecoration(
@@ -306,12 +388,13 @@ class FirstPage extends StatelessWidget {
         ),
       ],
       //
-      // child:floatingActionButton: FloatingActionButton(
-      //   child: const Icon(Icons.search),
-      //   onPressed: () => showSearch(context: context, delegate: Search()),
-      // ),
+
     ),
   ),
+    //     child:floatingActionButton: FloatingActionButton(
+    // child: const Icon(Icons.search),
+    // onPressed: () => showSearch(context: context, delegate: Search()),
+    // ),
 );
 
         }
