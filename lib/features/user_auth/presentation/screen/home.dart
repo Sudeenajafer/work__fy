@@ -111,7 +111,12 @@ class FirstPage extends StatelessWidget {
   padding: EdgeInsets.all(16.0),
     child: Column(
       children: [
-        Container(
+        GestureDetector(
+        onTap: () {
+      // Navigate to the next page
+            Navigator.push(context, MaterialPageRoute(builder: (context) => search()));
+         },
+        child: Container(
           padding: EdgeInsets.all(2.0),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
@@ -119,17 +124,16 @@ class FirstPage extends StatelessWidget {
             ),
           child: Row(
             children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              SizedBox(width: 8.0), // Adjust spacing between items
+              // IconButton(
+              //   icon: Icon(Icons.arrow_back),
+              //   onPressed: () {
+              //   },
+              // ),
+              // SizedBox(width: 8.0), // Adjust spacing between items
               Expanded(
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: 'What are you looking for...',
+                    hintText: 'Search here...',
                     border: InputBorder.none,
                   ),
                 ),
@@ -157,6 +161,7 @@ class FirstPage extends StatelessWidget {
           // ),),
           width: double.infinity,
           height: 40,
+        ),
         ),
         SizedBox(height: 16.0),
         // GestureDetector(
