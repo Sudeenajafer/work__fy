@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
 
   // List of pages to navigate to
   final List<Widget> _pages = [
-    FirstPage(),
+    const FirstPage(),
     SecondPage(),
     ThirdPage(),
   ];
@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
             _currentIndex = index;
           });
         },
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -101,111 +101,41 @@ class _HomePageState extends State<HomePage> {
   }
 }
 class FirstPage extends StatelessWidget {
-  TextEditingController _searchController = TextEditingController();
+  const FirstPage({super.key});
+
 
   @override
   Widget build(BuildContext context) {
 
     return SingleChildScrollView(
   child: Container(
-  padding: EdgeInsets.all(16.0),
+  padding: const EdgeInsets.all(16.0),
     child: Column(
       children: [
-        GestureDetector(
-        onTap: () {
-      // Navigate to the next page
-            Navigator.push(context, MaterialPageRoute(builder: (context) => search()));
-         },
-        child: Container(
-          padding: EdgeInsets.all(2.0),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              border: Border.all(color: Colors.grey), // Border color
-            ),
-          child: Row(
-            children: [
-              // IconButton(
-              //   icon: Icon(Icons.arrow_back),
-              //   onPressed: () {
-              //   },
-              // ),
-              // SizedBox(width: 8.0), // Adjust spacing between items
-              Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search here...',
-                    border: InputBorder.none,
-                  ),
+          Container(
+            height: 60,
+            width: double.infinity,
+            color: Colors.white,
+            child: Row(
+              children: [
+                const Text(
+                  'Search..',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                  ),              ),
+                const Spacer(), // Spacer widget to push the icon button to the end of the row
+                IconButton(
+                  icon: const Icon(Icons.arrow_forward),
+                  iconSize: 20.0, // Set the icon size as per your requirement
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => search()));
+                  },
                 ),
-              ),
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  // Handle search icon pressed
-                  // You can customize this action
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.clear),
-                onPressed: () {
-                  // Handle clear icon pressed
-                  // You can customize this action
-                },
-              ),
-            ],
+              ],
+            ),
           ),
-          // child: Text('search here...',
-          //   style: TextStyle(
-          //   fontSize: 20,
-          //   fontWeight: FontWeight.w900,
-          // ),),
-          width: double.infinity,
-          height: 40,
-        ),
-        ),
-        SizedBox(height: 16.0),
-        // GestureDetector(
-        //   onTap: ()  => showSearch(context: context, delegate: Search()),
-        //   child: Container(
-        //     padding: EdgeInsets.all(16.0),
-        //     child: Row(
-        //       children: [
-        //         IconButton(
-        //           icon: Icon(Icons.arrow_back),
-        //           onPressed: () {
-        //             // Handle back button action
-        //             Navigator.pop(context);
-        //           },
-        //         ),
-        //         Expanded(
-        //           child: TextField(
-        //             controller: _searchController,
-        //             decoration: InputDecoration(
-        //               hintText: 'Search...',
-        //               border: OutlineInputBorder(),
-        //             ),
-        //           ),
-        //         ),
-        //         IconButton(
-        //           icon: Icon(Icons.clear),
-        //           onPressed: () {
-        //             // Clear the search text
-        //             _searchController.clear();
-        //           },
-        //         ),
-        //         IconButton(
-        //           icon: Icon(Icons.search),
-        //           onPressed: () {
-        //             // Handle search button action
-        //             // You can use _searchController.text for the search query
-        //             print('Search: ${_searchController.text}');
-        //           },
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
-        // SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         Container(
           height: 250,
           decoration: BoxDecoration(
@@ -219,22 +149,22 @@ class FirstPage extends StatelessWidget {
               fit: BoxFit.cover,
             ),
         ),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         Container(
-          padding: EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(4.0),
           width: double.infinity,
-          height: 30,
+          height: 60,
           child: Row(
             children: [
-              Text(
+              const Text(
                 'Plumber',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
                 ),              ),
-              Spacer(), // Spacer widget to push the icon button to the end of the row
+              const Spacer(), // Spacer widget to push the icon button to the end of the row
               IconButton(
-                icon: Icon(Icons.arrow_forward),
+                icon: const Icon(Icons.arrow_forward),
                 iconSize: 20.0, // Set the icon size as per your requirement
                 onPressed: () {
                 },
@@ -243,7 +173,7 @@ class FirstPage extends StatelessWidget {
           ),
 
         ),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         Container(
           height: 250,
           decoration: BoxDecoration(
@@ -257,22 +187,22 @@ class FirstPage extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         Container(
-          padding: EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(4.0),
           width: double.infinity,
-          height: 30,
+          height: 60,
           child: Row(
             children: [
-              Text(
+              const Text(
                 'Electrician',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
                 ),              ),
-              Spacer(), // Spacer widget to push the icon button to the end of the row
+              const Spacer(), // Spacer widget to push the icon button to the end of the row
               IconButton(
-                icon: Icon(Icons.arrow_forward),
+                icon: const Icon(Icons.arrow_forward),
                 iconSize: 20.0, // Set the icon size as per your requirement
                 onPressed: () {
                 },
@@ -280,7 +210,7 @@ class FirstPage extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         Container(
           height: 250,
           decoration: BoxDecoration(
@@ -294,22 +224,22 @@ class FirstPage extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         Container(
-          padding: EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(4.0),
           width: double.infinity,
-          height: 30,
+          height: 60,
           child: Row(
             children: [
-              Text(
+              const Text(
                 'Mechanic',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
                 ),              ),
-              Spacer(), // Spacer widget to push the icon button to the end of the row
+              const Spacer(), // Spacer widget to push the icon button to the end of the row
               IconButton(
-                icon: Icon(Icons.arrow_forward),
+                icon: const Icon(Icons.arrow_forward),
                 iconSize: 20.0, // Set the icon size as per your requirement
                 onPressed: () {
                 },
@@ -317,7 +247,7 @@ class FirstPage extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         Container(
           height: 250,
           decoration: BoxDecoration(
@@ -331,22 +261,22 @@ class FirstPage extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         Container(
-          padding: EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(4.0),
           width: double.infinity,
-          height: 30,
+          height: 60,
           child: Row(
             children: [
-              Text(
+              const Text(
                 'Painter',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
                 ),              ),
-              Spacer(), // Spacer widget to push the icon button to the end of the row
+              const Spacer(), // Spacer widget to push the icon button to the end of the row
               IconButton(
-                icon: Icon(Icons.arrow_forward),
+                icon: const Icon(Icons.arrow_forward),
                 iconSize: 20.0, // Set the icon size as per your requirement
                 onPressed: () {
                 },
@@ -354,7 +284,7 @@ class FirstPage extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         Container(
           height: 250,
           decoration: BoxDecoration(
@@ -368,22 +298,22 @@ class FirstPage extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        SizedBox(height: 16.0),
+        const SizedBox(height: 16.0),
         Container(
-          padding: EdgeInsets.all(4.0),
+          padding: const EdgeInsets.all(4.0),
           width: double.infinity,
-          height: 30,
+          height: 60,
           child: Row(
             children: [
-              Text(
+              const Text(
                 'House Keeping',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
                 ),              ),
-              Spacer(), // Spacer widget to push the icon button to the end of the row
+              const Spacer(), // Spacer widget to push the icon button to the end of the row
               IconButton(
-                icon: Icon(Icons.arrow_forward),
+                icon: const Icon(Icons.arrow_forward),
                 iconSize: 20.0, // Set the icon size as per your requirement
                 onPressed: () {
                 },
@@ -408,7 +338,7 @@ class FirstPage extends StatelessWidget {
 class SecondPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text('Available Services'),
     );
   }
@@ -417,7 +347,7 @@ class SecondPage extends StatelessWidget {
 class ThirdPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text('Booking'),
     );
   }
