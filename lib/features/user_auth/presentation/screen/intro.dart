@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:work__fy/features/user_auth/presentation/screen/signup.dart';
-// import 'register.dart';
+import 'register.dart';
  import 'login.dart';
 
 class Myintro extends StatefulWidget {
@@ -42,12 +42,12 @@ class _MyintroState extends State<Myintro> {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) =>  LoginPage(),
-                            //   ),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>  RegisterPage(),
+                              ),
+                            );
                           },
                           child: Text('Register'),
                         ),
@@ -56,7 +56,7 @@ class _MyintroState extends State<Myintro> {
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
-                            //     builder: (context) =>  LoginPage(),
+                            //     builder: (context) =>  RegisterPage(),
                             //   ),
                             // );
                           },
