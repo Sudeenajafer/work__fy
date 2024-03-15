@@ -115,8 +115,17 @@ class FirstPage extends StatelessWidget {
           Container(
             height: 60,
             width: double.infinity,
-            color: Colors.white,
+            // color: Colors.white,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.black, // Border color
+                width: 2.0, // Border width
+              ),
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            padding: EdgeInsets.all(16.0),
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
                   'Search..',
@@ -336,6 +345,9 @@ class FirstPage extends StatelessWidget {
 }
 
 class SecondPage extends StatelessWidget {
+  const SecondPage({super.key});
+
+
   @override
   Widget build(BuildContext context) {
     return const Center(
