@@ -1,24 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(RegisterApp());
-}
+import 'home2.dart';
 
-class RegisterApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Registration Page',
-      home: RegisterPage(),
-    );
-  }
-}
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -32,25 +20,36 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String _selectedJob = 'Plumber';
+  String _selectedJob = '-<select>-';
+
+  final List<String> _jobList = [
+ '-<select>-',
+    'Plumber',
+    'Painter',
+    'Mechanic',
+    'House Keeper',
+    'Tutor',
+    'Baby Sitter',
+    'Electrician',
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: const Text('Register'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 TextFormField(
                   controller: _firstNameController,
-                  decoration: InputDecoration(labelText: 'First Name'),
+                  decoration: const InputDecoration(labelText: 'First Name'),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your first name';
@@ -60,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 TextFormField(
                   controller: _lastNameController,
-                  decoration: InputDecoration(labelText: 'Last Name'),
+                  decoration: const InputDecoration(labelText: 'Last Name'),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your last name';
@@ -70,28 +69,30 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 TextFormField(
                   controller: _ageController,
-                  decoration: InputDecoration(labelText: 'Age'),
+                  decoration: const InputDecoration(labelText: 'Age'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your age';
-                    }
-                    int? age = int.tryParse(value);
-                    if (age == null || age <= 18) {
-                      return 'Age must be greater than 18';
+                    } else {
+                      int? age = int.tryParse(value);
+                      if (age == null || age <= 18) {
+                        return 'Age must be greater than 18';
+                      }
                     }
                     return null;
                   },
                 ),
                 TextFormField(
                   controller: _emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
+                  decoration: const InputDecoration(labelText: 'Email'),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your email';
-                    }
-                    if (!value.contains('@')) {
+                    } else if (!RegExp(
+                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+                        .hasMatch(value)) {
                       return 'Please enter a valid email address';
                     }
                     return null;
@@ -99,7 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 TextFormField(
                   controller: _locationController,
-                  decoration: InputDecoration(labelText: 'Location'),
+                  decoration: const InputDecoration(labelText: 'Location'),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your location';
@@ -109,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 TextFormField(
                   controller: _addressController,
-                  decoration: InputDecoration(labelText: 'Address'),
+                  decoration: const InputDecoration(labelText: 'Address'),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your address';
@@ -117,46 +118,47 @@ class _RegisterPageState extends State<RegisterPage> {
                     return null;
                   },
                 ),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
+                ),
                 DropdownButtonFormField(
                   value: _selectedJob,
-                  items: [
-                    DropdownMenuItem(child: Text('Plumber'), value: 'Plumber'),
-                    DropdownMenuItem(child: Text('Painter'), value: 'Painter'),
-                    DropdownMenuItem(child: Text('Mechanic'), value: 'Mechanic'),
-                    DropdownMenuItem(child: Text('House Keeper'), value: 'House Keeper'),
-                    DropdownMenuItem(child: Text('Tutor'), value: 'Tutor'),
-                    DropdownMenuItem(child: Text('Baby Sitter'), value: 'Baby Sitter'),
-                    DropdownMenuItem(child: Text('Electrician'), value: 'Electrician'),
-                  ],
+                  items: _jobList.map((job) {
+                    return DropdownMenuItem(
+                      value: job,
+                      child: Text(job),
+                    );
+                  }).toList(),
+                  hint: const Text('Select a Job'),
                   onChanged: (value) {
                     setState(() {
                       _selectedJob = value!;
                     });
                   },
-                  decoration: InputDecoration(labelText: 'Job'),
-                ),
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(labelText: 'Password'),
+                  decoration: const InputDecoration(labelText: 'Job'),
                   validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    if (value.length < 6) {
-                      return 'Password must be at least 6 characters long';
+                    if (value == null) {
+                      return 'Please select a job';
                     }
                     return null;
                   },
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       _register();
                     }
                   },
-                  child: Text('Register'),
+                  child: const Text('Register'),
                 ),
               ],
             ),
@@ -166,47 +168,70 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void _register() async {
-    try {
-      // Access Firestore instance
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
+  void _register() {
+    String firstName = _firstNameController.text;
+    String lastName = _lastNameController.text;
+    int age = int.parse(_ageController.text);
+    String email = _emailController.text;
+    String location = _locationController.text;
+    String address = _addressController.text;
+    String password = _passwordController.text;
 
-      // Add data to Firestore
-      await firestore.collection('users').add({
-        'first_name': _firstNameController.text,
-        'last_name': _lastNameController.text,
-        'age': int.parse(_ageController.text),
-        'email': _emailController.text,
-        'location': _locationController.text,
-        'address': _addressController.text,
-        'job': _selectedJob,
-        // You can add other fields as needed
+    // Add data to Firestore
+    FirebaseFirestore.instance.collection('Workers').add({
+      'first_name': firstName,
+      'last_name': lastName,
+      'age': age,
+      'email': email,
+      'location': location,
+      'address': address,
+      'password': password,
+      'job': _selectedJob,
+    }).then((value) {
+      // If job is selected, add data to corresponding subcollection
+      FirebaseFirestore.instance
+          .collection('Jobs')
+          .doc(_selectedJob)
+          .collection('workers')
+          .add({
+        'first_name': firstName,
+        'last_name': lastName,
+        'age': age,
+        'email': email,
+        'location': location,
+        'address': address,
+        'password': password,
       });
-
-      // Reset form fields
-      _formKey.currentState?.reset();
-
-      // Show success message or navigate to next screen
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Success'),
-            content: Text('Registration Successful'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    } catch (e) {
-      // Handle errors
-      print('Error: $e');
-    }
+    });
+    _formKey.currentState?.reset();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Success'),
+          content: const Text('Registration Successful'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => WorkersHome()));
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _ageController.dispose();
+    _emailController.dispose();
+    _locationController.dispose();
+    _addressController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }
+
