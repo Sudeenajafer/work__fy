@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:work__fy/features/user_auth/presentation/screen/signup.dart';
 import 'register.dart';
  import 'login.dart';
+import 'login2.dart';
+
 
 class Myintro extends StatefulWidget {
   const Myintro({super.key, required child});
@@ -53,12 +55,12 @@ class _MyintroState extends State<Myintro> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) =>  RegisterPage(),
-                            //   ),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>  LoginPage2(),
+                              ),
+                            );
                           },
                           child: Text('Login'),
                         ),
