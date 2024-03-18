@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+
+class Worker {
+  final String name;
+  final String job;
+
+  Worker({required this.name, required this.job});
+}
 class search extends StatefulWidget {
   const search({Key? key}) : super(key: key);
   @override
@@ -103,6 +110,16 @@ Widget build(BuildContext context) {
                       title: Text(_foundUsers[index]['name'], style: TextStyle(
                           color: Colors.black
                       )),
+                      onTap: () {
+                        // Navigate to worker's page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WorkerDetailsScreen(workerName: _foundUsers[index]["name"],
+                            ),
+                          ),
+                        );
+                      },
                       // subtitle: Text(
                       //     '${_foundUsers[index]["age"].toString()} years old',
                       //     style: TextStyle(
@@ -121,4 +138,22 @@ Widget build(BuildContext context) {
     ),
   );
 }
+}
+
+class WorkerDetailsScreen extends StatelessWidget {
+  final String workerName;
+
+  WorkerDetailsScreen({required this.workerName});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Worker Details"),
+      ),
+      body: Center(
+        child: Text("Details of $workerName"),
+      ),
+    );
+  }
 }
