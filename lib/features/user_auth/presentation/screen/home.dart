@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const FirstPage(),
     SecondPage(),
-    ThirdPage(),
+    ThirdPage(phoneNumber: '', location: '',),
   ];
 
   @override
@@ -357,13 +357,42 @@ class SecondPage extends StatelessWidget {
 }
 
 class ThirdPage extends StatelessWidget {
+  final String phoneNumber;
+  final String location;
+
+  const ThirdPage({required this.phoneNumber, required this.location});
+
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Booking'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Booking Details'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Worker Phone Number:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Text(phoneNumber),
+            SizedBox(height: 20),
+            Text(
+              'Worker Location:',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 5),
+            Text(location),
+          ],
+        ),
+      ),
     );
   }
 }
+
 
 
 //

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'home.dart';
 class search extends StatefulWidget {
   const search({super.key});
   @override
@@ -156,10 +158,56 @@ class WorkerDetailPage extends StatelessWidget {
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
                 Map<String, dynamic>? workerData = document.data() as Map<String, dynamic>?;
                 // Use null-aware operators to handle null values
-                String workerName = workerData?['email'] ?? 'Unknown'; // Use a default value if 'name' is null
-                return ListTile(
-                  title: Text(workerName),
-                );
+                if (workerData != null && workerData.containsKey('first_name') && workerData.containsKey('last_name')) {
+                  String first_name = workerData?['first_name'] ??
+                      'Unknown'; // Use a default value if 'name' is null
+                  String last_name = workerData?['last_name'] ??
+                      'Unknown'; // Use a default value if 'name' is null
+
+                  return ListTile(
+                      leading: Icon(Icons.person),
+                      title: Text('$first_name $last_name',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),),
+                      // subtitle: Text('Go to Gym at 6:00 AM'),
+                      trailing: IconButton(
+                        onPressed: () {
+                          {
+                            // Navigate to booking page
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ThirdPage(
+                                  phoneNumber: workerData?['phone_number'] ?? '',
+                                  location: workerData?['location'] ?? '',
+                                ),
+                              ),
+                            );
+                          }                        },
+                        icon: Icon(Icons.arrow_forward),
+                      )
+                  );
+                  // ListTile(
+                  //   title: Text('Go to College'),
+                  //   subtitle: Text('Go to College at 8:00 AM'),
+                  // ),
+                  // ListTile(
+                  //   title: Text('Go to Office'),
+                  //   subtitle: Text('Go to Office at 11:00 AM'),
+                  // ),
+                  // Add more ListTiles as needed
+
+                  // title: Text('$first_name $last_name'),
+
+                }
+                else {
+                  // Handle the case where firstname and/or lastname fields are missing
+                  return ListTile(
+                    title: Text('Missing Data'),
+                  );
+                }
               }).toList(),
             );
           }
