@@ -1,102 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-class Worker {
-  final String name;
-  final String description; // Add more fields as needed
-
-  Worker({required this.name, required this.description});
-
-  factory Worker.fromMap(Map<String, dynamic> map) {
-    return Worker(
-      name: map['name'],
-      description: map['description'],
-    );
-  }
-}
-
-class FirestoreService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  Future<Worker?> getWorkerByName(String jobName, String workerName) async {
-    try {
-      DocumentSnapshot doc = await _firestore
-          .collection('Jobs')
-          .doc(jobName)
-          .collection('workers')
-          .doc(workerName)
-          .get();
-      if (doc.exists) {
-        return Worker.fromMap(doc.data() as Map<String, dynamic>);
-      }
-      return null;
-    } catch (e) {
-      print("Error fetching worker: $e");
-      return null;
-    }
-  }
-}
-
-
-class WorkerDetailPage extends StatelessWidget {
-  final String jobName;
-  final String workerName;
-  final FirestoreService _firestoreService = FirestoreService();
-
-  WorkerDetailPage({required this.jobName,required this.workerName});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(workerName),
-      ),
-      body: FutureBuilder(
-        future: _firestoreService.getWorkerByName(jobName,workerName),
-        builder: (context, AsyncSnapshot<Worker?> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          final Worker? worker = snapshot.data;
-          if (worker == null) {
-            return Center(child: Text('Worker data not found.'));
-          }
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Description:',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  worker.description,
-                  style: TextStyle(fontSize: 16),
-                ),
-                // Add more fields as needed
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
 class search extends StatefulWidget {
-  const search({Key? key}) : super(key: key);
+  const search({super.key});
   @override
   State<search> createState() => _searchState();
 
 }
-
 class _searchState extends State<search> {
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
 
   final List<Map<String, dynamic>> _allUsers = [
     {"name": "Painter"},
@@ -105,19 +16,19 @@ class _searchState extends State<search> {
     {"name": "Electrician"},
     {"name": "Mechanic"},
     {"name": "Tutor"},
-    {"name": "Baby sitter"},
+    {"name": "Baby Sitter"},
   ];
 
-// This list holds the data for the list view
+  // This list holds the data for the list view
   List<Map<String, dynamic>> _foundUsers = [];
+
   @override
   initState() {
-
     _foundUsers = _allUsers;
     super.initState();
   }
 
-// This function is called whenever the text field changes
+  // This function is called whenever the text field changes
   void _runFilter(String enteredKeyword) {
     List<Map<String, dynamic>> results = [];
     if (enteredKeyword.isEmpty) {
@@ -130,7 +41,7 @@ class _searchState extends State<search> {
           .toList();
       // we use the toLowerCase() method to make it case-insensitive
     }
-    setState((){
+    setState(() {
       _foundUsers = results;
     });
   }
@@ -152,23 +63,25 @@ class _searchState extends State<search> {
               controller: _textEditingController,
               onChanged: (value) => _runFilter(value),
               decoration: InputDecoration(
-                labelText: 'Search', suffixIcon:Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: () {
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.clear),
-                    onPressed: () {
-                      setState(() {
-                        _textEditingController.clear();
-                      });                  },
-                  ),
-                ],
-              ),),
+                labelText: 'Search',
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.search),
+                      onPressed: () {},
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        setState(() {
+                          _textEditingController.clear();
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(
               height: 20,
@@ -177,38 +90,28 @@ class _searchState extends State<search> {
               child: _foundUsers.isNotEmpty
                   ? ListView.builder(
                 itemCount: _foundUsers.length,
-                itemBuilder: (context, index) =>
-                    Card(
-                      key: ValueKey(_foundUsers[index]["name"]),
-                      color: Colors.white,
-                      elevation: 4,
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      child: ListTile(
-                        // leading: Text(
-                        //   _foundUsers[index]["id"].toString(),
-                        //   style: const TextStyle(
-                        //       fontSize: 24, color: Colors.white),
-                        // ),
-                        title: Text(_foundUsers[index]['name'], style: TextStyle(
-                            color: Colors.black
-                        )),
-                        onTap: () {
-                          // Navigate to worker's page
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WorkerDetailPage(jobName:_allUsers[index]["name"],workerName: _foundUsers[index]["name"],
-                              ),
-                            ),
-                          );
-                        },
-                        // subtitle: Text(
-                        //     '${_foundUsers[index]["age"].toString()} years old',
-                        //     style: TextStyle(
-                        //         color: Colors.white
-                        //     )),
-                      ),
-                    ),
+                itemBuilder: (context, index) => Card(
+                  key: ValueKey(_foundUsers[index]["name"]),
+                  color: Colors.white,
+                  elevation: 4,
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  child: ListTile(
+                    title: Text(_foundUsers[index]['name'],
+                        style: const TextStyle(color: Colors.black)),
+                    onTap: () {
+                      // Fetch worker data for the selected job from Firestore
+                      String selectedJob = _foundUsers[index]["name"];
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => WorkerDetailPage(
+                            jobName: selectedJob,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               )
                   : const Text(
                 'No results found',
@@ -217,6 +120,50 @@ class _searchState extends State<search> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class WorkerDetailPage extends StatelessWidget {
+  final String jobName;
+
+  const WorkerDetailPage({required this.jobName});
+
+  // get workerData => null;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Workers for $jobName'),
+      ),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('Jobs')
+            .doc(jobName)
+            .collection('workers')
+            .snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No workers found for $jobName'));
+          } else {
+            return ListView(
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                Map<String, dynamic>? workerData = document.data() as Map<String, dynamic>?;
+                // Use null-aware operators to handle null values
+                String workerName = workerData?['email'] ?? 'Unknown'; // Use a default value if 'name' is null
+                return ListTile(
+                  title: Text(workerName),
+                );
+              }).toList(),
+            );
+          }
+        },
       ),
     );
   }
