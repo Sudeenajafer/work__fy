@@ -138,15 +138,21 @@ class _LoginPage2State extends State<LoginPage2> {
     // If there is a match, the user is logged in
     if (querySnapshot.docs.isNotEmpty) {
       showToast(message: "User is successfully signed in");
-      Navigator.push(context, MaterialPageRoute(builder: (context) => WorkersHome()));
-      // Navigate to the home page or perform any action you want
+      String email = _emailController.text;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => WorkersHome(email: email)),
+      );      // Navigate to the home page or perform any action you want
       print('Login Successful');
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => WorkerProfilePage(email: email)));
+
     } else {
       showToast(message: "some error occured");
 
       // Display an error message or perform any action you want
       print('Invalid email or password');
     }
+
   }
 
   @override

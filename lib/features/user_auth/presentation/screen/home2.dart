@@ -1,19 +1,23 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../../../../global/toast.dart';
-import 'login2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class WorkersHome extends StatefulWidget {
-  const WorkersHome({super.key});
+  // const WorkersHome({super.key});
+  final String email;
+  const WorkersHome({Key? key, required this.email}) : super(key: key);
 
   @override
   _WorkersHomeState createState() => _WorkersHomeState();
 
 }
 class _WorkersHomeState extends State<WorkersHome> {
+  int _currentIndex = 0;
 
+  // List of pages to navigate to
+  final List<Widget> _pages = [
+    const FirstPage(),
+    WorkerProfilePage(email: 'email',),
+  ];
 
   @override
 
@@ -38,38 +42,102 @@ class _WorkersHomeState extends State<WorkersHome> {
           ), //IconButton
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            UserAccountsDrawerHeader(
-              accountName: Text('_userName'),
-              accountEmail: Text('_userEmail'),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: Icon(Icons.person),
-              ),
-            ),
-            const ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text('Profile'),
-            ),
-            const ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('signOut'),
-              onTap: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage2()));
-                showToast(message: "Successfully signed out");
-              },
-            ),          ],
-        ),
+      body:_pages[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.task),
+            label: 'Scheduled Tasks',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }
 }
 
+
+
+
+class FirstPage extends StatelessWidget {
+  const FirstPage({super.key});
+
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Scheduled Tasks'),
+    );
+  }
+}
+
+class WorkerProfilePage extends StatefulWidget {
+  final String email;
+
+  const WorkerProfilePage({Key? key, required this.email}) : super(key: key);
+
+  @override
+  _WorkerProfilePageState createState() => _WorkerProfilePageState();
+}
+
+class _WorkerProfilePageState extends State<WorkerProfilePage> {
+  Map<String, dynamic>? _workerDetails;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchWorkerDetails();
+  }
+
+  Future<void> _fetchWorkerDetails() async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('Workers')
+        .where('email', isEqualTo: widget.email)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      setState(() {
+        _workerDetails = querySnapshot.docs.first.data() as Map<String, dynamic>;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Worker Profile'),
+      ),
+      body: _workerDetails == null
+          ? Center(
+        child: CircularProgressIndicator(),
+      )
+          : Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'First Name: ${_workerDetails!['first_name']}',
+              style: TextStyle(fontSize: 18),
+            ),
+            Text(
+              'Last Name: ${_workerDetails!['last_name']}',
+              style: TextStyle(fontSize: 18),
+            ),
+            // Add more details as needed
+          ],
+        ),
+      ),
+    );
+  }
+}

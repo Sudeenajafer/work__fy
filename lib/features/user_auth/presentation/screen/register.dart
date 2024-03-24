@@ -16,10 +16,12 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController(); // New phone number controller
+
   String _selectedJob = '-<select>-';
 
   final List<String> _jobList = [
@@ -84,21 +86,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                 ),
                 TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your email';
-                    } else if (!RegExp(
-                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-                        .hasMatch(value)) {
-                      return 'Please enter a valid email address';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
                   controller: _locationController,
                   decoration: const InputDecoration(labelText: 'Location'),
                   validator: (value) {
@@ -119,12 +106,40 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                 ),
                 TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(labelText: 'Email'),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your email';
+                    } else if (!RegExp(
+                        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+                        .hasMatch(value)) {
+                      return 'Please enter a valid email address';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
                   controller: _passwordController,
                   decoration: const InputDecoration(labelText: 'Password'),
                   obscureText: true,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your password';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _phoneNumberController, // Added phone number controller
+                  decoration: const InputDecoration(labelText: 'Phone Number'),
+                  keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your phone number';
+                    } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                      return 'Please enter a valid phone number';
                     }
                     return null;
                   },
@@ -172,10 +187,12 @@ class _RegisterPageState extends State<RegisterPage> {
     String firstName = _firstNameController.text;
     String lastName = _lastNameController.text;
     int age = int.parse(_ageController.text);
-    String email = _emailController.text;
     String location = _locationController.text;
     String address = _addressController.text;
+    String email = _emailController.text;
     String password = _passwordController.text;
+    String phoneNumber = _phoneNumberController.text; // Retrieve phone number
+
 
     // Add data to Firestore
     FirebaseFirestore.instance.collection('Workers').add({
@@ -186,6 +203,7 @@ class _RegisterPageState extends State<RegisterPage> {
       'location': location,
       'address': address,
       'password': password,
+      'phone_number': phoneNumber, // Store phone number in Firestore
       'job': _selectedJob,
     }).then((value) {
       // If job is selected, add data to corresponding subcollection
@@ -201,6 +219,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'location': location,
         'address': address,
         'password': password,
+        'phone_number': phoneNumber, // Store phone number in Firestore
       });
     });
     _formKey.currentState?.reset();
@@ -213,7 +232,7 @@ class _RegisterPageState extends State<RegisterPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => WorkersHome()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => WorkersHome(email: email,)));
               },
               child: const Text('OK'),
             ),
@@ -231,6 +250,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _locationController.dispose();
     _addressController.dispose();
     _passwordController.dispose();
+    _phoneNumberController.dispose(); // Dispose phone number controller
     super.dispose();
   }
 }
