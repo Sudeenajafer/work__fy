@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class WorkersHome extends StatefulWidget {
-  // const WorkersHome({super.key});
   final String email;
-  const WorkersHome({Key? key, required this.email}) : super(key: key);
+  const WorkersHome({Key? key, required this.email,}) : super(key: key);
 
   @override
   _WorkersHomeState createState() => _WorkersHomeState();
@@ -12,12 +11,16 @@ class WorkersHome extends StatefulWidget {
 }
 class _WorkersHomeState extends State<WorkersHome> {
   int _currentIndex = 0;
-
+  late List<Widget> _pages;
   // List of pages to navigate to
-  final List<Widget> _pages = [
-    const FirstPage(),
-    WorkerProfilePage(email: 'email',),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _pages = [
+      const FirstPage(),
+      WorkerProfilePage(email: widget.email,),
+    ];
+  }
 
   @override
 
@@ -38,7 +41,13 @@ class _WorkersHomeState extends State<WorkersHome> {
           IconButton(
             icon: const Icon(Icons.comment),
             tooltip: 'Comment Icon',
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                  MaterialPageRoute(builder: (context) => WorkerProfilePage(email: widget.email))
+              );
+            },
+
           ), //IconButton
         ],
       ),
@@ -106,7 +115,7 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
 
     if (querySnapshot.docs.isNotEmpty) {
       setState(() {
-        _workerDetails = querySnapshot.docs.first.data() as Map<String, dynamic>;
+        _workerDetails = querySnapshot.docs.first.data() as Map<String, dynamic>?;
       });
     }
   }
@@ -121,19 +130,46 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
           ? Center(
         child: CircularProgressIndicator(),
       )
-          : Padding(
+          : SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'First Name: ${_workerDetails!['first_name']}',
-              style: TextStyle(fontSize: 18),
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
+            SizedBox(height: 16.0),
             Text(
               'Last Name: ${_workerDetails!['last_name']}',
-              style: TextStyle(fontSize: 18),
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
+            SizedBox(height: 16.0),
+            Text(
+              'Age: ${_workerDetails!['age']}',
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Location: ${_workerDetails!['location']}',
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Address: ${_workerDetails!['address']}',
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Email: ${_workerDetails!['email']}',
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Job: ${_workerDetails!['job']}',
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16.0),
             // Add more details as needed
           ],
         ),

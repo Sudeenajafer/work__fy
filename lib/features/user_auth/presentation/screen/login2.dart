@@ -141,7 +141,7 @@ class _LoginPage2State extends State<LoginPage2> {
       String email = _emailController.text;
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => WorkersHome(email: email)),
+        MaterialPageRoute(builder: (context) => WorkersHome(email: email,)),
       );      // Navigate to the home page or perform any action you want
       print('Login Successful');
       // Navigator.push(context, MaterialPageRoute(builder: (context) => WorkerProfilePage(email: email)));

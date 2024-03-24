@@ -219,7 +219,9 @@ class _RegisterPageState extends State<RegisterPage> {
         'location': location,
         'address': address,
         'password': password,
-        'phone_number': phoneNumber, // Store phone number in Firestore
+        'phone_number': phoneNumber,
+        'job': _selectedJob,
+// Store phone number in Firestore
       });
     });
     _formKey.currentState?.reset();
