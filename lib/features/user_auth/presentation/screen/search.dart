@@ -138,7 +138,11 @@ class WorkerDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Workers for $jobName'),
+        title: Text('Workers for $jobName',
+        style: TextStyle(fontWeight: FontWeight.bold,
+          fontSize: 24,
+        ),
+      ),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
@@ -159,17 +163,21 @@ class WorkerDetailPage extends StatelessWidget {
                 Map<String, dynamic>? workerData = document.data() as Map<String, dynamic>?;
                 // Use null-aware operators to handle null values
                 if (workerData != null && workerData.containsKey('first_name') && workerData.containsKey('last_name')) {
-                  String first_name = workerData?['first_name'] ??
+                  String first_name = workerData['first_name'] ??
                       'Unknown'; // Use a default value if 'name' is null
-                  String last_name = workerData?['last_name'] ??
+                  String last_name = workerData['last_name'] ??
                       'Unknown'; // Use a default value if 'name' is null
 
                   return ListTile(
-                      leading: Icon(Icons.person),
+                      leading: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.person),
+                        iconSize: 24,
+                      ),
                       title: Text('$first_name $last_name',
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
                           color: Colors.black,
+                          fontSize: 20,
                         ),),
                       // subtitle: Text('Go to Gym at 6:00 AM'),
                       trailing: IconButton(
@@ -180,13 +188,17 @@ class WorkerDetailPage extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ThirdPage(
-                                  phoneNumber: workerData?['phone_number'] ?? '',
-                                  location: workerData?['location'] ?? '',
+                                  firstname: workerData['first_name'] ?? '',
+                                  email: workerData['email'] ?? '',
+                                  phoneNumber: workerData['phone_number'] ?? '',
+                                  location: workerData['location'] ?? '', workerId: '',
                                 ),
                               ),
                             );
                           }                        },
                         icon: Icon(Icons.arrow_forward),
+                        iconSize: 24,
+
                       )
                   );
                   // ListTile(

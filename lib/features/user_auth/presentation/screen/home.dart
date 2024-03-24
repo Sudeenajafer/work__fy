@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../../global/toast.dart';
@@ -17,7 +18,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const FirstPage(),
     SecondPage(),
-    ThirdPage(phoneNumber: '', location: '',),
+    ThirdPage(phoneNumber: '', location: '', firstname: '', email: '', workerId: '',),
   ];
 
   @override
@@ -38,7 +39,9 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: const Icon(Icons.comment),
             tooltip: 'Comment Icon',
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => commnet()));
+            },
           ), //IconButton
           ],
       ),
@@ -123,7 +126,7 @@ class FirstPage extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(20.0),
             ),
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -138,7 +141,7 @@ class FirstPage extends StatelessWidget {
                   icon: const Icon(Icons.arrow_forward),
                   iconSize: 20.0, // Set the icon size as per your requirement
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => search()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const search()));
                   },
                 ),
               ],
@@ -344,48 +347,230 @@ class FirstPage extends StatelessWidget {
         }
 }
 
+
 class SecondPage extends StatelessWidget {
-  const SecondPage({super.key});
-
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Available Services'),
-    );
-  }
-}
-
-class ThirdPage extends StatelessWidget {
-  final String phoneNumber;
-  final String location;
-
-  const ThirdPage({required this.phoneNumber, required this.location});
+  final List<String> services = [
+    'Painter',
+    'House Keeper',
+    'Plumber',
+    'Electrician',
+    'Mechanic',
+    'Tutor',
+    'Baby Sitter',
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Booking Details'),
+        title: const Text('Available Services',
+          style: TextStyle(fontSize: 30),
+        ),
+        centerTitle: false,
+
+      ),
+      body: ListView.builder(
+        itemCount: services.length,
+        itemBuilder: (context, index) => Card(
+          key: ValueKey(services[index]),
+          color: Colors.white,
+          elevation: 4,
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          child: ListTile(
+            title: Text(services[index],
+                style: const TextStyle(color: Colors.black)),
+            onTap: () {
+              // Fetch worker data for the selected job from Firestore
+              String selectedJob = services[index];
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WorkerDetailPage(
+                    jobName: selectedJob,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      )
+    );
+  }
+}
+
+
+
+
+class ThirdPage extends StatelessWidget {
+  final String firstname;
+  final String email;
+  final String phoneNumber;
+  final String location;
+  final String workerId;
+
+  ThirdPage({required this.phoneNumber, required this.location, required this.firstname, required this.email, required this.workerId});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Booking'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Worker Phone Number:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Container(
+              // padding: const EdgeInsets.all(4.0),
+              width: double.infinity,
+              height: 30,
+              child: const Text(
+                'Worker Details:',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
             ),
-            SizedBox(height: 5),
-            Text(phoneNumber),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               'Worker Location:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 24,),
             ),
             SizedBox(height: 5),
-            Text(location),
+            Text(location,style: TextStyle(fontSize: 24,),),
+            SizedBox(height: 20),
+            Text(
+              'Worker Phone Number:',
+              style: TextStyle(fontSize: 24,),
+            ),
+            SizedBox(height: 5),
+            Text(phoneNumber,style: TextStyle(fontSize: 24,),),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+            child: ElevatedButton(
+              onPressed: () async {
+                _bookNow(context);
+                await _makeBooking();
+              },
+              child: Text('Book now',style: TextStyle(fontSize: 24,),),
+            ),
+        ),
+    );
+  }
+
+  void _bookNow(BuildContext context) {
+    // Perform booking logic here
+    // For example, show a dialog confirming the booking
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Booking Successful'),
+        content: Text('Your booking has been confirmed.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => FourthPage( firstname: '', email: '',phoneNumber: '', location: '',)));
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+  Future<void> _makeBooking() async {
+    try {
+      // Add booking data to Firestore
+      await FirebaseFirestore.instance.collection('bookings').add({
+        'firstname': firstname,
+        'email': email,
+        'phoneNumber': phoneNumber,
+        'location': location,
+        'timestamp': Timestamp.now(),
+      });
+    } catch (e) {
+      // Handle error
+      print('Error making booking: $e');
+    }
+  }
+}
+class FourthPage extends StatelessWidget {
+  final String firstname;
+  final String email;
+  final String phoneNumber;
+  final String location;
+
+  FourthPage({required this.phoneNumber, required this.location, required this.firstname, required this.email});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Booking'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              // padding: const EdgeInsets.all(4.0),
+              width: double.infinity,
+              height: 30,
+              child: const Text(
+                'Worker Details:',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Worker Location:',
+              style: TextStyle(fontSize: 24,),
+            ),
+            SizedBox(height: 5),
+            Text(location, style: TextStyle(fontSize: 24,),),
+            SizedBox(height: 20),
+            Text(
+              'Worker Phone Number:',
+              style: TextStyle(fontSize: 24,),
+            ),
+            SizedBox(height: 5),
+            Text(phoneNumber, style: TextStyle(fontSize: 24,),),
+            SizedBox(height: 5),
+            ElevatedButton(
+              onPressed: () {
+                // Handle cancelling booking
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('Cancel Booking'),
+                      content: Text('Are you sure you want to cancel the booking?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            // Perform cancel booking operation
+                            // Display message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Booking cancelled')),
+                            );
+                            Navigator.pushNamed(context, "/home");
+                          },
+                          child: Text('Yes'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context); // Close the dialog
+                          },
+                          child: Text('No'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Text('Cancel Booking'),
+            ),
           ],
         ),
       ),
@@ -393,6 +578,14 @@ class ThirdPage extends StatelessWidget {
   }
 }
 
+class commnet extends StatelessWidget {
+  const commnet({super.key});
 
 
-//
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('No notifivation yet..'),
+    );
+  }
+}

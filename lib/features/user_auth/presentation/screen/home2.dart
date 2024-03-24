@@ -17,7 +17,7 @@ class _WorkersHomeState extends State<WorkersHome> {
   void initState() {
     super.initState();
     _pages = [
-      const FirstPage(),
+      FirstPage(email: widget.email,),
       WorkerProfilePage(email: widget.email,),
     ];
   }
@@ -43,7 +43,7 @@ class _WorkersHomeState extends State<WorkersHome> {
             tooltip: 'Comment Icon',
             onPressed: () {
               Navigator.push(
-                context,
+                  context,
                   MaterialPageRoute(builder: (context) => WorkerProfilePage(email: widget.email))
               );
             },
@@ -76,19 +76,49 @@ class _WorkersHomeState extends State<WorkersHome> {
 
 
 
+class FirstPage extends StatefulWidget {
+  final String email;
+  const FirstPage({Key? key, required this.email}) : super(key: key);
 
-class FirstPage extends StatelessWidget {
-  const FirstPage({super.key});
+  @override
+  _FirstPageState createState() => _FirstPageState();
+}
 
+class _FirstPageState extends State<FirstPage> {
+  bool isBooked = false; // Flag to track if user is booked
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen for changes in the 'bookings' collection
+    FirebaseFirestore.instance.collection('bookings').snapshots().listen((snapshot) {
+      // Check if current user's phone number is in the bookings
+      String currentUserPhoneNumber = ''; // Replace with current user's phone number
+      setState(() {
+        isBooked = snapshot.docs.any((doc) => doc['phoneNumber'] == currentUserPhoneNumber);
+      });
+      if (isBooked) {
+        print('You have a scheduled task.'); // Print message if user is booked
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Scheduled Tasks'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Schedule Task'),
+      ),
+      body: Center(
+        child: Text(
+          isBooked ? 'You have a scheduled task.' : 'No scheduled task found.',
+          style: TextStyle(fontSize: 20),
+        ),
+      ),
     );
   }
 }
-
+  
 class WorkerProfilePage extends StatefulWidget {
   final String email;
 
@@ -135,39 +165,138 @@ class _WorkerProfilePageState extends State<WorkerProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'First Name: ${_workerDetails!['first_name']}',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            Center(
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.account_circle),
+                  iconSize: 100,
+                )
+            ),
+            SizedBox(height: 20),
+            Container(
+              height: 60,
+              width: double.infinity,
+              // color: Colors.white,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black, // Border color
+                  width: 2.0, // Border width
+                ),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child:Text(
+                'First Name: ${_workerDetails!['first_name']}',
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+              padding: EdgeInsets.all(15.0), // Padding inside the container
             ),
             SizedBox(height: 16.0),
-            Text(
-              'Last Name: ${_workerDetails!['last_name']}',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            Container(
+              height: 60,
+              width: double.infinity,
+              // color: Colors.white,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black, // Border color
+                  width: 2.0, // Border width
+                ),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child:Text(
+                'Last Name: ${_workerDetails!['last_name']}',
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+              padding: EdgeInsets.all(15.0), // Padding inside the container
             ),
             SizedBox(height: 16.0),
-            Text(
-              'Age: ${_workerDetails!['age']}',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            Container(
+              height: 60,
+              width: double.infinity,
+              // color: Colors.white,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black, // Border color
+                  width: 2.0, // Border width
+                ),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child:Text(
+                'Age: ${_workerDetails!['age']}',
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+              padding: EdgeInsets.all(15.0), // Padding inside the container
             ),
             SizedBox(height: 16.0),
-            Text(
-              'Location: ${_workerDetails!['location']}',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            Container(
+              height: 60,
+              width: double.infinity,
+              // color: Colors.white,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black, // Border color
+                  width: 2.0, // Border width
+                ),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child:Text(
+                'Location: ${_workerDetails!['location']}',
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+              padding: EdgeInsets.all(15.0), // Padding inside the container
             ),
             SizedBox(height: 16.0),
-            Text(
-              'Address: ${_workerDetails!['address']}',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            Container(
+              height: 60,
+              width: double.infinity,
+              // color: Colors.white,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black, // Border color
+                  width: 2.0, // Border width
+                ),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child:Text(
+                'Address: ${_workerDetails!['address']}',
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+              padding: EdgeInsets.all(15.0), // Padding inside the container
             ),
             SizedBox(height: 16.0),
-            Text(
-              'Email: ${_workerDetails!['email']}',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            Container(
+              height: 60,
+              width: double.infinity,
+              // color: Colors.white,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black, // Border color
+                  width: 2.0, // Border width
+                ),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child:Text(
+                'Email: ${_workerDetails!['email']}',
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+              padding: EdgeInsets.all(15.0), // Padding inside the container
             ),
             SizedBox(height: 16.0),
-            Text(
-              'Job: ${_workerDetails!['job']}',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            Container(
+              height: 60,
+              width: double.infinity,
+              // color: Colors.white,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black, // Border color
+                  width: 2.0, // Border width
+                ),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child:Text(
+                'Job: ${_workerDetails!['job']}',
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+              padding: EdgeInsets.all(15.0), // Padding inside the container
             ),
             SizedBox(height: 16.0),
             // Add more details as needed
