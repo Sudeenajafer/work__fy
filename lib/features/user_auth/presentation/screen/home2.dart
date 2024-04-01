@@ -42,10 +42,10 @@ class _WorkersHomeState extends State<WorkersHome> {
             icon: const Icon(Icons.comment),
             tooltip: 'Comment Icon',
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => WorkerProfilePage(email: widget.email))
-              );
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => WorkerProfilePage(email: widget.email))
+              // );
             },
 
           ), //IconButton
