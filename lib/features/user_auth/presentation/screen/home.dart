@@ -480,12 +480,16 @@ class ThirdPage extends StatelessWidget {
   }
   Future<void> _makeBooking() async {
     try {
+      // Get current user's email from FirebaseAuth
+      String userEmail = FirebaseAuth.instance.currentUser!.email!;
+
       // Add booking data to Firestore
       await FirebaseFirestore.instance.collection('bookings').add({
         'firstname': firstname,
         'email': email,
         'phoneNumber': phoneNumber,
         'location': location,
+        'userEmail': userEmail, // Add current user's email
         'timestamp': Timestamp.now(),
       });
     } catch (e) {
@@ -493,6 +497,7 @@ class ThirdPage extends StatelessWidget {
       print('Error making booking: $e');
     }
   }
+
 }
 class FourthPage extends StatelessWidget {
   final String firstname;

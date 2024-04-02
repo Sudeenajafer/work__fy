@@ -8,7 +8,7 @@ import '../../widgets/form_container_widget.dart';
 import 'login.dart';
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
@@ -20,6 +20,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController(); // Added
 
   bool isSigningUp = false;
 
@@ -28,6 +29,7 @@ class _SignUpPageState extends State<SignUpPage> {
     _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _locationController.dispose(); // Dispose location controller
     super.dispose();
   }
 
@@ -73,12 +75,19 @@ class _SignUpPageState extends State<SignUpPage> {
                 isPasswordField: true,
               ),
               const SizedBox(
+                height: 10,
+              ),
+              FormContainerWidget( // Added for location input
+                controller: _locationController,
+                hintText: "Location",
+                isPasswordField: false,
+              ),
+              const SizedBox(
                 height: 30,
               ),
               GestureDetector(
-                onTap:  (){
+                onTap: () {
                   _signUp();
-
                 },
                 child: Container(
                   width: double.infinity,
@@ -88,11 +97,17 @@ class _SignUpPageState extends State<SignUpPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
-                      child: isSigningUp ? const CircularProgressIndicator(color: Colors.white,):const Text(
-                        "Sign Up",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      )),
+                    child: isSigningUp
+                        ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                        : const Text(
+                      "Sign Up",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -116,7 +131,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: const Text(
                         "Login",
                         style: TextStyle(
-                            color: Colors.blue, fontWeight: FontWeight.bold),
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold),
                       ))
                 ],
               )
@@ -128,12 +144,13 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void _signUp() async {
-    CollectionReference collRef =FirebaseFirestore.instance.collection('user');
+    CollectionReference collRef =
+    FirebaseFirestore.instance.collection('user');
     collRef.add({
-      'name':_usernameController.text,
-      'email':_emailController.text,
-      'password':_passwordController.text,
-
+      'name': _usernameController.text,
+      'email': _emailController.text,
+      'password': _passwordController.text,
+      'location': _locationController.text, // Save location to Firestore
     });
 
     setState(() {
@@ -152,7 +169,7 @@ class _SignUpPageState extends State<SignUpPage> {
       showToast(message: "User is successfully created");
       Navigator.pushNamed(context, "/home");
     } else {
-      showToast(message: "Some error happend");
+      showToast(message: "Some error happened");
     }
   }
 }

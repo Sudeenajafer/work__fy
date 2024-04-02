@@ -73,9 +73,6 @@ class _WorkersHomeState extends State<WorkersHome> {
     );
   }
 }
-
-
-
 class FirstPage extends StatefulWidget {
   final String email;
   const FirstPage({Key? key, required this.email}) : super(key: key);
@@ -88,37 +85,150 @@ class _FirstPageState extends State<FirstPage> {
   bool isBooked = false; // Flag to track if user is booked
 
   @override
-  void initState() {
-    super.initState();
-    // Listen for changes in the 'bookings' collection
-    FirebaseFirestore.instance.collection('bookings').snapshots().listen((snapshot) {
-      // Check if current user's phone number is in the bookings
-      String currentUserPhoneNumber = ''; // Replace with current user's phone number
-      setState(() {
-        isBooked = snapshot.docs.any((doc) => doc['phoneNumber'] == currentUserPhoneNumber);
-      });
-      if (isBooked) {
-        print('You have a scheduled task.'); // Print message if user is booked
-      }
-    });
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Scheduled Tasks'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('bookings').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final docs = snapshot.data!.docs;
+          final userBookings = docs
+              .where((doc) => doc['email'] == widget.email)
+              .map((doc) {
+            final data = doc.data();
+            if (data != null) {
+              return Booking.fromMap(data as Map<String, dynamic>);
+            } else {
+              return null;
+            }
+          })
+              .whereType<Booking>() // Remove null elements
+              .toList();
+          return ListView.builder(
+            itemCount: userBookings.length,
+            itemBuilder: (context, index) {
+              final booking = userBookings[index];
+              return NotificationContainer(
+                booking: booking,
+                onAccept: () {
+                  // Handle accepting the booking
+                  // Navigate to the next page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BookingDetailsPage(booking: booking),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
   }
+}
+
+class Booking {
+  final String workerName;
+  final String time;
+  final String userEmail; // Add user's email who booked the service
+
+  Booking({required this.workerName, required this.time, required this.userEmail});
+
+  factory Booking.fromMap(Map<String, dynamic> map) {
+    return Booking(
+      workerName: map['workerName'] as String? ?? '',
+      time: map['time'] as String? ?? '',
+      userEmail: map['email'] as String? ?? '', // Fetch user's email who booked the service
+    );
+  }
+}
+
+class NotificationContainer extends StatelessWidget {
+  final Booking booking;
+  final VoidCallback onAccept;
+
+  NotificationContainer({required this.booking, required this.onAccept});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Worker: ${booking.workerName}',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text('Time: ${booking.time}'),
+            ],
+          ),
+          ElevatedButton(
+            onPressed: onAccept,
+            child: Text('Accept'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class BookingDetailsPage extends StatelessWidget {
+  final Booking booking;
+
+  const BookingDetailsPage({Key? key, required this.booking}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Schedule Task'),
+        title: Text('Booking Details'),
       ),
-      body: Center(
-        child: Text(
-          isBooked ? 'You have a scheduled task.' : 'No scheduled task found.',
-          style: TextStyle(fontSize: 20),
-        ),
+      body: FutureBuilder<DocumentSnapshot>(
+        future: FirebaseFirestore.instance.collection('bookings').doc(userEmail).get(), // Fetch user's details using email
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (!snapshot.hasData || !snapshot.data!.exists) {
+            return Center(child: Text('User not found'));
+          }
+          final userData = snapshot.data!.data() as Map<String, dynamic>;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Name: ${userData['name']}'),
+              Text('Location: ${userData['location']}'),
+              Text('Phone Number: ${userData['phone']}'),
+              // Add more user details here
+            ],
+          );
+        },
       ),
     );
   }
 }
-  
+
 class WorkerProfilePage extends StatefulWidget {
   final String email;
 
