@@ -123,7 +123,7 @@ class _FirstPageState extends State<FirstPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BookingDetailsPage(booking: booking),
+                      builder: (context) => BookingDetailsPage(booking: booking, currentUserEmail: 'email',),
                     ),
                   );
                 },
@@ -190,10 +190,12 @@ class NotificationContainer extends StatelessWidget {
   }
 }
 
-class BookingDetailsPage extends StatelessWidget {
-  final Booking booking;
 
-  const BookingDetailsPage({Key? key, required this.booking}) : super(key: key);
+
+class BookingDetailsPage extends StatelessWidget {
+  final String currentUserEmail; // Assuming you pass the current user's email as a parameter
+
+  const BookingDetailsPage({Key? key, required this.currentUserEmail, required Booking booking}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -201,8 +203,8 @@ class BookingDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Booking Details'),
       ),
-      body: FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance.collection('bookings').doc(userEmail).get(), // Fetch user's details using email
+      body: FutureBuilder<QuerySnapshot>(
+        future: FirebaseFirestore.instance.collection('bookings').where('email', isEqualTo: currentUserEmail).get(), // Fetch bookings using current user's email
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -210,17 +212,19 @@ class BookingDetailsPage extends StatelessWidget {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
-          if (!snapshot.hasData || !snapshot.data!.exists) {
-            return Center(child: Text('User not found'));
+          if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No bookings found for this user'));
           }
-          final userData = snapshot.data!.data() as Map<String, dynamic>;
+          final bookingData = snapshot.data!.docs.first.data() as Map<String, dynamic>;
+          final email = bookingData['email'];
+          final firstname = bookingData['firstname'];
+          final timestamp = bookingData['timestamp'];
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Name: ${userData['name']}'),
-              Text('Location: ${userData['location']}'),
-              Text('Phone Number: ${userData['phone']}'),
-              // Add more user details here
+              Text('Email: $email'),
+              Text('First Name: $firstname'),
+              Text('Timestamp: $timestamp'),
             ],
           );
         },
@@ -228,6 +232,10 @@ class BookingDetailsPage extends StatelessWidget {
     );
   }
 }
+
+
+
+
 
 class WorkerProfilePage extends StatefulWidget {
   final String email;
