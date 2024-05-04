@@ -73,8 +73,11 @@ class _WorkersHomeState extends State<WorkersHome> {
     );
   }
 }
+
+
 class FirstPage extends StatefulWidget {
   final String email;
+
   const FirstPage({Key? key, required this.email}) : super(key: key);
 
   @override
@@ -118,12 +121,11 @@ class _FirstPageState extends State<FirstPage> {
               return NotificationContainer(
                 booking: booking,
                 onAccept: () {
-                  // Handle accepting the booking
-                  // Navigate to the next page
+                  // Fetch details from subcollection and navigate to BookingDetailsPage
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BookingDetailsPage(booking: booking, currentUserEmail: 'email',),
+                      builder: (context) => BookingDetailsPage(email: widget.email, booking: booking),
                     ),
                   );
                 },
@@ -190,12 +192,42 @@ class NotificationContainer extends StatelessWidget {
   }
 }
 
+class BookingDetailsPage extends StatefulWidget {
+  final String email;
+  final Booking booking;
 
+  const BookingDetailsPage({Key? key, required this.email, required this.booking}) : super(key: key);
 
-class BookingDetailsPage extends StatelessWidget {
-  final String currentUserEmail; // Assuming you pass the current user's email as a parameter
+  @override
+  _BookingDetailsPageState createState() => _BookingDetailsPageState();
+}
 
-  const BookingDetailsPage({Key? key, required this.currentUserEmail, required Booking booking}) : super(key: key);
+class _BookingDetailsPageState extends State<BookingDetailsPage> {
+  Map<String, dynamic>? _bookingDetails;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchBookingDetails();
+  }
+
+  Future<void> _fetchBookingDetails() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(widget.booking.userEmail) // Assuming user's email is used as document ID in subcollection
+          .collection('details')
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        setState(() {
+          _bookingDetails = querySnapshot.docs.first.data() as Map<String, dynamic>?;
+        });
+      }
+    } catch (e) {
+      print('Error fetching booking details: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -203,39 +235,36 @@ class BookingDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Booking Details'),
       ),
-      body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('bookings').where('email', isEqualTo: currentUserEmail).get(), // Fetch bookings using current user's email
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No bookings found for this user'));
-          }
-          final bookingData = snapshot.data!.docs.first.data() as Map<String, dynamic>;
-          final email = bookingData['email'];
-          final firstname = bookingData['firstname'];
-          final timestamp = bookingData['timestamp'];
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Email: $email'),
-              Text('First Name: $firstname'),
-              Text('Timestamp: $timestamp'),
-            ],
-          );
-        },
+      body: _bookingDetails == null
+          ? Center(
+        child: CircularProgressIndicator(),
+      )
+          : SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'User Email: ${_bookingDetails!['email']}',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'User First Name: ${_bookingDetails!['firstname']}',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16.0),
+            Text(
+              'Timestamp: ${_bookingDetails!['timestamp']}',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            // Add more details as needed
+          ],
+        ),
       ),
     );
   }
 }
-
-
-
-
 
 class WorkerProfilePage extends StatefulWidget {
   final String email;
