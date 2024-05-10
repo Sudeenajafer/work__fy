@@ -203,7 +203,8 @@ class BookingDetailsPage extends StatefulWidget {
 }
 
 class _BookingDetailsPageState extends State<BookingDetailsPage> {
-  Map<String, dynamic>? _bookingDetails;
+  List<Map<String,
+      dynamic>>? _bookingDetails; // Changed the type to List<Map<String, dynamic>>.
 
   @override
   void initState() {
@@ -212,20 +213,21 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
   }
 
   Future<void> _fetchBookingDetails() async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('bookings')
-          .doc(widget.booking.userEmail) // Assuming user's email is used as document ID in subcollection
-          .collection('details')
-          .get();
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('bookings')
+        .where('email', isEqualTo: widget.email)
+        .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        setState(() {
-          _bookingDetails = querySnapshot.docs.first.data() as Map<String, dynamic>?;
-        });
-      }
-    } catch (e) {
-      print('Error fetching booking details: $e');
+    List<Map<String, dynamic>> bookings = [
+    ]; // Create a list to hold booking details.
+
+    if (querySnapshot.docs.isNotEmpty) {
+      querySnapshot.docs.forEach((doc) {
+        bookings.add(doc.data() as Map<String, dynamic>);
+      });
+      setState(() {
+        _bookingDetails = bookings;
+      });
     }
   }
 
@@ -243,28 +245,73 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'User Email: ${_bookingDetails!['email']}',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'User First Name: ${_bookingDetails!['firstname']}',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Timestamp: ${_bookingDetails!['timestamp']}',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            // Add more details as needed
-          ],
+          children: _bookingDetails!.map<Widget>((booking) {
+            return Column(
+              children: [
+                Container(
+                  height: 60,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black, // Border color
+                      width: 2.0, // Border width
+                    ),
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Text(
+                    'userEmail: ${booking['userEmail']}',
+                    style: TextStyle(
+                        fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                  padding: EdgeInsets.all(15.0), // Padding inside the container
+                ),
+                SizedBox(height: 16.0),
+                // Add more details as needed
+              ],
+            );
+          }).toList(),
         ),
       ),
     );
   }
+
 }
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Booking Details'),
+//       ),
+//       body: _bookingDetails == null
+//           ? Center(
+//         child: CircularProgressIndicator(),
+//       )
+//           : SingleChildScrollView(
+//         padding: const EdgeInsets.all(16.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Text(
+//               'User Email: ${_bookingDetails!['userEmail']}',
+//               style: TextStyle(fontWeight: FontWeight.bold),
+//             ),
+//             SizedBox(height: 16.0),
+//             Text(
+//               'User First Name: ${_bookingDetails!['firstname']}',
+//               style: TextStyle(fontWeight: FontWeight.bold),
+//             ),
+//             SizedBox(height: 16.0),
+//             Text(
+//               'Timestamp: ${_bookingDetails!['timestamp']}',
+//               style: TextStyle(fontWeight: FontWeight.bold),
+//             ),
+//             // Add more details as needed
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class WorkerProfilePage extends StatefulWidget {
   final String email;
