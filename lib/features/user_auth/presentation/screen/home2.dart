@@ -1,29 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';  // Import the intl package
 
 class WorkersHome extends StatefulWidget {
   final String email;
-  const WorkersHome({Key? key, required this.email,}) : super(key: key);
+  const WorkersHome({Key? key, required this.email}) : super(key: key);
 
   @override
   _WorkersHomeState createState() => _WorkersHomeState();
-
 }
+
 class _WorkersHomeState extends State<WorkersHome> {
   int _currentIndex = 0;
   late List<Widget> _pages;
-  // List of pages to navigate to
+
   @override
   void initState() {
     super.initState();
     _pages = [
-      FirstPage(email: widget.email,),
-      WorkerProfilePage(email: widget.email,),
+      FirstPage(email: widget.email),
+      WorkerProfilePage(email: widget.email),
     ];
   }
 
   @override
-
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -31,9 +31,7 @@ class _WorkersHomeState extends State<WorkersHome> {
         title: const Text('WorkiFy',
             style: TextStyle(
                 fontSize: 20,
-                fontWeight: FontWeight.bold
-            )),
-        // ,
+                fontWeight: FontWeight.bold)),
         centerTitle: true,
         elevation: 0.0,
         backgroundColor: Colors.blue,
@@ -42,16 +40,12 @@ class _WorkersHomeState extends State<WorkersHome> {
             icon: const Icon(Icons.comment),
             tooltip: 'Comment Icon',
             onPressed: () {
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(builder: (context) => WorkerProfilePage(email: widget.email))
-              // );
+              // Add any action you want here
             },
-
-          ), //IconButton
+          ),
         ],
       ),
-      body:_pages[_currentIndex],
+      body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -74,7 +68,6 @@ class _WorkersHomeState extends State<WorkersHome> {
   }
 }
 
-
 class FirstPage extends StatefulWidget {
   final String email;
 
@@ -85,8 +78,6 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
-  bool isBooked = false; // Flag to track if user is booked
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +103,7 @@ class _FirstPageState extends State<FirstPage> {
               return null;
             }
           })
-              .whereType<Booking>() // Remove null elements
+              .whereType<Booking>()
               .toList();
           return ListView.builder(
             itemCount: userBookings.length,
@@ -121,13 +112,8 @@ class _FirstPageState extends State<FirstPage> {
               return NotificationContainer(
                 booking: booking,
                 onAccept: () {
-                  // Fetch details from subcollection and navigate to BookingDetailsPage
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BookingDetailsPage(email: widget.email, booking: booking),
-                    ),
-                  );
+                  // Handle the booking acceptance
+                  _acceptBooking(booking);
                 },
               );
             },
@@ -136,23 +122,52 @@ class _FirstPageState extends State<FirstPage> {
       ),
     );
   }
+
+  void _acceptBooking(Booking booking) async {
+    // Update the booking status or remove it from Firestore
+    await FirebaseFirestore.instance
+        .collection('bookings')
+        .where('email', isEqualTo: booking.userEmail)
+        .where('workerName', isEqualTo: booking.workerName)
+        .where('time', isEqualTo: booking.time)
+        .get()
+        .then((snapshot) {
+      for (var doc in snapshot.docs) {
+        doc.reference.delete();
+      }
+    });
+
+    // Show confirmation snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Booking accepted!'),
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
 }
 
 class Booking {
   final String workerName;
-  final String time;
-  final String userEmail; // Add user's email who booked the service
+  final Timestamp time;
+  final String userEmail;
 
   Booking({required this.workerName, required this.time, required this.userEmail});
 
   factory Booking.fromMap(Map<String, dynamic> map) {
     return Booking(
-      workerName: map['workerName'] as String? ?? '',
-      time: map['time'] as String? ?? '',
-      userEmail: map['email'] as String? ?? '', // Fetch user's email who booked the service
+      workerName: map['firstname'] as String? ?? '',
+      time: map['timestamp'] as Timestamp? ?? Timestamp.now(),  // Fetch timestamp
+      userEmail: map['userEmail'] as String? ?? '',
     );
   }
+  String get formattedTimestamp {
+    DateTime dateTime = time.toDate();
+    // Convert DateTime to original timestamp string format
+    return DateFormat('MMMM d, yyyy at h:mm:ss a').format(dateTime);
+  }
 }
+
 
 class NotificationContainer extends StatelessWidget {
   final Booking booking;
@@ -175,11 +190,8 @@ class NotificationContainer extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Worker: ${booking.workerName}',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text('Time: ${booking.time}'),
+              Text('Date&Time: ${booking.formattedTimestamp}'),
+              Text('User Email: ${booking.userEmail}'),
             ],
           ),
           ElevatedButton(
@@ -191,127 +203,6 @@ class NotificationContainer extends StatelessWidget {
     );
   }
 }
-
-class BookingDetailsPage extends StatefulWidget {
-  final String email;
-  final Booking booking;
-
-  const BookingDetailsPage({Key? key, required this.email, required this.booking}) : super(key: key);
-
-  @override
-  _BookingDetailsPageState createState() => _BookingDetailsPageState();
-}
-
-class _BookingDetailsPageState extends State<BookingDetailsPage> {
-  List<Map<String,
-      dynamic>>? _bookingDetails; // Changed the type to List<Map<String, dynamic>>.
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchBookingDetails();
-  }
-
-  Future<void> _fetchBookingDetails() async {
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('bookings')
-        .where('email', isEqualTo: widget.email)
-        .get();
-
-    List<Map<String, dynamic>> bookings = [
-    ]; // Create a list to hold booking details.
-
-    if (querySnapshot.docs.isNotEmpty) {
-      querySnapshot.docs.forEach((doc) {
-        bookings.add(doc.data() as Map<String, dynamic>);
-      });
-      setState(() {
-        _bookingDetails = bookings;
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Booking Details'),
-      ),
-      body: _bookingDetails == null
-          ? Center(
-        child: CircularProgressIndicator(),
-      )
-          : SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: _bookingDetails!.map<Widget>((booking) {
-            return Column(
-              children: [
-                Container(
-                  height: 60,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black, // Border color
-                      width: 2.0, // Border width
-                    ),
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  child: Text(
-                    'userEmail: ${booking['userEmail']}',
-                    style: TextStyle(
-                        fontSize: 16.0, fontWeight: FontWeight.bold),
-                  ),
-                  padding: EdgeInsets.all(15.0), // Padding inside the container
-                ),
-                SizedBox(height: 16.0),
-                // Add more details as needed
-              ],
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-
-}
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Booking Details'),
-//       ),
-//       body: _bookingDetails == null
-//           ? Center(
-//         child: CircularProgressIndicator(),
-//       )
-//           : SingleChildScrollView(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text(
-//               'User Email: ${_bookingDetails!['userEmail']}',
-//               style: TextStyle(fontWeight: FontWeight.bold),
-//             ),
-//             SizedBox(height: 16.0),
-//             Text(
-//               'User First Name: ${_bookingDetails!['firstname']}',
-//               style: TextStyle(fontWeight: FontWeight.bold),
-//             ),
-//             SizedBox(height: 16.0),
-//             Text(
-//               'Timestamp: ${_bookingDetails!['timestamp']}',
-//               style: TextStyle(fontWeight: FontWeight.bold),
-//             ),
-//             // Add more details as needed
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class WorkerProfilePage extends StatefulWidget {
   final String email;
