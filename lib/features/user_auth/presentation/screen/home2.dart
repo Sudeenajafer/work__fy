@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';  // Import the intl package
+import 'intro.dart';
 
 class WorkersHome extends StatefulWidget {
   final String email;
@@ -37,6 +38,19 @@ class _WorkersHomeState extends State<WorkersHome> {
         backgroundColor: Colors.blue,
         actions: <Widget>[
         ],
+        automaticallyImplyLeading: false, // Disable the default leading behavior
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navigate to the specified page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Myintro(child: null,),
+              ),
+            );
+          },
+        ),
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -127,8 +141,10 @@ class Booking {
   final String workerName;
   final Timestamp time;
   final String userEmail;
+  bool isAccepted;
+  bool isRejected;
 
-  Booking({required this.workerName, required this.time, required this.userEmail});
+  Booking({required this.workerName, required this.time, required this.userEmail, this.isAccepted = false, this.isRejected = false,});
 
   factory Booking.fromMap(Map<String, dynamic> map) {
     return Booking(
@@ -180,10 +196,18 @@ class NotificationContainer extends StatelessWidget {
   }
 }
 
-class BookingDetailsPage extends StatelessWidget {
+class BookingDetailsPage extends StatefulWidget {
   final Booking booking;
 
   BookingDetailsPage({required this.booking});
+
+  @override
+  _BookingDetailsPageState createState() => _BookingDetailsPageState();
+}
+
+class _BookingDetailsPageState extends State<BookingDetailsPage> {
+  bool isActionTaken = false; // To track if Accept or Reject button was pressed
+  bool isWorkDone = false; // To track if the Work Done button was pressed
 
   @override
   Widget build(BuildContext context) {
@@ -199,24 +223,30 @@ class BookingDetailsPage extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Date&Time: ${booking.formattedTimestamp}', style: TextStyle(fontSize: 18)),
+                Text('Date & Time: ${widget.booking.formattedTimestamp}', style: TextStyle(fontSize: 18)),
                 SizedBox(height: 10),
-                Text('User Email: ${booking.userEmail}', style: TextStyle(fontSize: 18)),
+                Text('User Email: ${widget.booking.userEmail}', style: TextStyle(fontSize: 18)),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () => _showConfirmationDialog(context, 'Accept'),
-                  child: Text('Accept'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _showConfirmationDialog(context, 'Reject'),
-                  child: Text('Reject'),
-                ),
-              ],
-            ),
+            if (!isActionTaken)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => _showConfirmationDialog(context, 'Accept'),
+                    child: Text('Accept'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _showConfirmationDialog(context, 'Reject'),
+                    child: Text('Reject'),
+                  ),
+                ],
+              )
+            else if (!isWorkDone)
+              ElevatedButton(
+                onPressed: () => _markWorkAsDone(context),
+                child: Text('Work Done'),
+              ),
           ],
         ),
       ),
@@ -241,7 +271,9 @@ class BookingDetailsPage extends StatelessWidget {
               child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
-                Navigator.of(context).pop(); // Go back to the previous page
+                setState(() {
+                  isActionTaken = true; // Show the Work Done button
+                });
 
                 // Show snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -257,7 +289,27 @@ class BookingDetailsPage extends StatelessWidget {
       },
     );
   }
+
+  void _markWorkAsDone(BuildContext context) {
+    setState(() {
+      isWorkDone = true;
+    });
+
+    // Show snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Work marked as done!'),
+        duration: Duration(seconds: 1),
+      ),
+    );
+
+    // Delete the booking from Scheduled Task page
+    // This is where you would implement the logic to remove the booking
+
+    Navigator.of(context).pop(); // Go back to the previous page after marking as done
+  }
 }
+
 class WorkerProfilePage extends StatefulWidget {
   final String email;
 

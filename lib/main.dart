@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'features/user_auth/presentation/screen/intro.dart';
 // Import Firebase Auth
 import 'features/user_auth/presentation/screen/home.dart';
-import 'features/user_auth/presentation/screen/splash.dart';
 import 'features/user_auth/presentation/screen/login.dart';
 import 'features/user_auth/presentation/screen/signup.dart';
 
@@ -42,10 +41,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Firebase',
       routes: {
-        '/': (context) => const Mysplash(
-              // Here, you can decide whether to show the LoginPage or HomePage based on user authentication
-               child: Myintro(child: null,),
-            ),
+        '/': (context) => const Myintro(child: null,),
        '/login': (context) => const LoginPage(),
         '/signUp': (context) => const SignUpPage(),
         '/home': (context) => const HomePage(),

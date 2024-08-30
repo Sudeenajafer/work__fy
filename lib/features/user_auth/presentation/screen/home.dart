@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../../global/toast.dart';
+import 'intro.dart';
 import 'search.dart';
 
 
@@ -35,18 +36,22 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         elevation: 0.0,
         backgroundColor: Colors.blue,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.comment),
-            tooltip: 'Comment Icon',
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => commnet()));
-            },
-          ), //IconButton
-          ],
+        actions: <Widget>[],
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navigate to the specified page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Myintro(child: null,),
+              ),
+            );
+          },
+        ),
       ),
 
-      drawer: Drawer(
+      endDrawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
@@ -96,7 +101,7 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
-            label: 'Booking',
+            label: 'Bookings',
           ),
         ],
       ),
@@ -367,6 +372,7 @@ class SecondPage extends StatelessWidget {
           style: TextStyle(fontSize: 30),
         ),
         centerTitle: false,
+        automaticallyImplyLeading: false,  // Removes the back arrow
 
       ),
       body: ListView.builder(
@@ -414,7 +420,10 @@ class ThirdPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Booking'),
+        title: const Text('Bookings',
+        style: TextStyle(fontSize: 30),),
+      centerTitle: false,
+        automaticallyImplyLeading: false,  // Removes the back arrow
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -458,7 +467,6 @@ class ThirdPage extends StatelessWidget {
         ),
     );
   }
-
   void _bookNow(BuildContext context) {
     // Perform booking logic here
     // For example, show a dialog confirming the booking
@@ -470,7 +478,12 @@ class ThirdPage extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => FourthPage( firstname: '', email: '',phoneNumber: '', location: '',)));
+              // Perform cancel booking operation and navigate to FirstPage
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+                    (Route<dynamic> route) => false,
+              );
             },
             child: Text('OK'),
           ),
@@ -478,6 +491,7 @@ class ThirdPage extends StatelessWidget {
       ),
     );
   }
+
   Future<void> _makeBooking() async {
     try {
       // Get current user's email from FirebaseAuth
@@ -512,6 +526,19 @@ class FourthPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Booking'),
+        automaticallyImplyLeading: false, // Disable the default leading behavior
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navigate to the specified page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FirstPage(),
+              ),
+            );
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -554,18 +581,26 @@ class FourthPage extends StatelessWidget {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            // Perform cancel booking operation
-                            // Display message
+                            // Perform cancel booking operation and navigate to FirstPage
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text('Booking cancelled')),
                             );
-                            Navigator.pushNamed(context, "/home");
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => HomePage()),
+                                  (Route<dynamic> route) => false,
+                            );
                           },
                           child: Text('Yes'),
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.pop(context); // Close the dialog
+                            // Just navigate back to FirstPage without cancelling
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => HomePage()),
+                                  (Route<dynamic> route) => false,
+                            );
                           },
                           child: Text('No'),
                         ),
@@ -579,18 +614,6 @@ class FourthPage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class commnet extends StatelessWidget {
-  const commnet({super.key});
-
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('No notifivation yet..'),
     );
   }
 }
