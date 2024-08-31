@@ -111,247 +111,245 @@ class _HomePageState extends State<HomePage> {
 class FirstPage extends StatelessWidget {
   const FirstPage({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Animated Images Carousel
+              SizedBox(
+                height: 200,
+                child: PageView(
+                  children: [
+                    Image.network(
+                      'https://www.canva.com/design/DAGPchsntEE/WsV6u68ck_Gln3Xd76kMzQ/view?utm_content=DAGPchsntEE&utm_campaign=designshare&utm_medium=link&utm_source=editor',
+                      fit: BoxFit.cover,
+                    ),
+                    Image.asset(
+                      'assets/images/image2.png',
+                      fit: BoxFit.cover,
+                    ),
+                    Image.asset(
+                      'assets/images/image3.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24.0),
+              // Services Heading
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Deals & Offers',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              // Deals Horizontal Scroll
+              SizedBox(
+                height: 100,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    DealCard(text: '10% Discount on First Booking'),
+                    DealCard(text: 'Express Service'),
+                    DealCard(text: 'Peak Hour Discounts'),
+                    DealCard(text: 'No Hidden Charges'),
+                    DealCard(text: 'Free Cancellation'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24.0),
+              // Services Heading
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Services',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              // Services Grid
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 16.0,
+                crossAxisSpacing: 16.0,
+                children: [
+                  ServiceCard(
+                    title: 'Painter',
+                    imageUrl:
+                    'https://pluspng.com/img-png/painting-png-painting-png-file-684.png',
+                    onTap: () {
+                      // Navigate to Painter page
+                    },
+                  ),
+                  ServiceCard(
+                    title: 'House Keeper',
+                    imageUrl:
+                    'https://i.ytimg.com/vi/WlR1CqjVRJk/maxresdefault.jpg',
+                    onTap: () {
+                      // Navigate to House Keeper page
+                    },
+                  ),
+                  ServiceCard(
+                    title: 'Plumber',
+                    imageUrl:
+                    'https://newvideomarketing.com/wp-content/uploads/2017/06/plumber_woman_animated.jpg',
+                    onTap: () {
+                      // Navigate to Plumber page
+                    },
+                  ),
+                  ServiceCard(
+                    title: 'Electrician',
+                    imageUrl:
+                    'https://i.ytimg.com/vi/GlzvfaiJqqg/maxresdefault.jpg',
+                    onTap: () {
+                      // Navigate to Electrician page
+                    },
+                  ),
+                  ServiceCard(
+                    title: 'Mechanic',
+                    imageUrl:
+                    'https://clipartmag.com/images/mechanic-clipart-13.png',
+                    onTap: () {
+                      // Navigate to Mechanic page
+                    },
+                  ),
+                  ServiceCard(
+                    title: 'Tutor',
+                    imageUrl:
+                    'https://via.placeholder.com/150.png?text=Tutor+Image',
+                    onTap: () {
+                      // Navigate to Tutor page
+                    },
+                  ),
+                  ServiceCard(
+                    title: 'Baby Sitter',
+                    imageUrl:
+                    'https://via.placeholder.com/150.png?text=Baby+Sitter+Image',
+                    onTap: () {
+                      // Navigate to Baby Sitter page
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DealCard extends StatelessWidget {
+  final String text;
+
+  const DealCard({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
-
-    return SingleChildScrollView(
-  child: Container(
-  padding: const EdgeInsets.all(16.0),
-    child: Column(
-      children: [
-          Container(
-            height: 60,
-            width: double.infinity,
-            // color: Colors.white,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black, // Border color
-                width: 2.0, // Border width
-              ),
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Search..',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                  ),              ),
-                const Spacer(), // Spacer widget to push the icon button to the end of the row
-                IconButton(
-                  icon: const Icon(Icons.arrow_forward),
-                  iconSize: 20.0, // Set the icon size as per your requirement
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const search()));
-                  },
-                ),
-              ],
-            ),
+    return Container(
+      width: 180,
+      margin: const EdgeInsets.only(right: 12.0),
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.blueAccent,
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
           ),
-        const SizedBox(height: 16.0),
-        Container(
-          height: 250,
-          decoration: BoxDecoration(
-            // borderRadius: BorderRadius.circular(20.0), // Border radius
-            border: Border.all(
-              color: Colors.black,
-              width: 2.0,
-            ),
-          ),
-            child: Image.network('https://newvideomarketing.com/wp-content/uploads/2017/06/plumber_woman_animated.jpg',
-              fit: BoxFit.cover,
-            ),
+          textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 16.0),
-        Container(
-          padding: const EdgeInsets.all(4.0),
-          width: double.infinity,
-          height: 60,
-          child: Row(
-            children: [
-              const Text(
-                'Plumber',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w900,
-                ),              ),
-              const Spacer(), // Spacer widget to push the icon button to the end of the row
-              IconButton(
-                icon: const Icon(Icons.arrow_forward),
-                iconSize: 20.0, // Set the icon size as per your requirement
-                onPressed: () {
-                },
-              ),
-            ],
-          ),
-
-        ),
-        const SizedBox(height: 16.0),
-        Container(
-          height: 250,
-          decoration: BoxDecoration(
-            // borderRadius: BorderRadius.circular(10.0), // Border radius
-            border: Border.all(
-              color: Colors.black,
-              width: 2.0,
-            ),
-          ),
-          child: Image.network('https://i.ytimg.com/vi/GlzvfaiJqqg/maxresdefault.jpg',
-            fit: BoxFit.cover,
-          ),
-        ),
-        const SizedBox(height: 16.0),
-        Container(
-          padding: const EdgeInsets.all(4.0),
-          width: double.infinity,
-          height: 60,
-          child: Row(
-            children: [
-              const Text(
-                'Electrician',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w900,
-                ),              ),
-              const Spacer(), // Spacer widget to push the icon button to the end of the row
-              IconButton(
-                icon: const Icon(Icons.arrow_forward),
-                iconSize: 20.0, // Set the icon size as per your requirement
-                onPressed: () {
-                },
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16.0),
-        Container(
-          height: 250,
-          decoration: BoxDecoration(
-            // borderRadius: BorderRadius.circular(10.0), // Border radius
-            border: Border.all(
-              color: Colors.black, // Border color
-              width: 2.0,
-            ),
-          ),
-          child: Image.network('https://clipartmag.com/images/mechanic-clipart-13.png',
-            fit: BoxFit.cover,
-          ),
-        ),
-        const SizedBox(height: 16.0),
-        Container(
-          padding: const EdgeInsets.all(4.0),
-          width: double.infinity,
-          height: 60,
-          child: Row(
-            children: [
-              const Text(
-                'Mechanic',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w900,
-                ),              ),
-              const Spacer(), // Spacer widget to push the icon button to the end of the row
-              IconButton(
-                icon: const Icon(Icons.arrow_forward),
-                iconSize: 20.0, // Set the icon size as per your requirement
-                onPressed: () {
-                },
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16.0),
-        Container(
-          height: 250,
-          decoration: BoxDecoration(
-            // borderRadius: BorderRadius.circular(10.0), // Border radius
-            border: Border.all(
-              color: Colors.black,
-              width: 2.0,
-            ),
-          ),
-          child: Image.network('http://pluspng.com/img-png/painting-png-painting-png-file-684.png',
-            fit: BoxFit.cover,
-          ),
-        ),
-        const SizedBox(height: 16.0),
-        Container(
-          padding: const EdgeInsets.all(4.0),
-          width: double.infinity,
-          height: 60,
-          child: Row(
-            children: [
-              const Text(
-                'Painter',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w900,
-                ),              ),
-              const Spacer(), // Spacer widget to push the icon button to the end of the row
-              IconButton(
-                icon: const Icon(Icons.arrow_forward),
-                iconSize: 20.0, // Set the icon size as per your requirement
-                onPressed: () {
-                },
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16.0),
-        Container(
-          height: 250,
-          decoration: BoxDecoration(
-            // borderRadius: BorderRadius.circular(10.0), // Border radius
-            border: Border.all(
-              color: Colors.black, // Border color
-              width: 2.0,
-            ),
-          ),
-          child: Image.network('https://i.ytimg.com/vi/WlR1CqjVRJk/maxresdefault.jpg',
-            fit: BoxFit.cover,
-          ),
-        ),
-        const SizedBox(height: 16.0),
-        Container(
-          padding: const EdgeInsets.all(4.0),
-          width: double.infinity,
-          height: 60,
-          child: Row(
-            children: [
-              const Text(
-                'House Keeping',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w900,
-                ),              ),
-              const Spacer(), // Spacer widget to push the icon button to the end of the row
-              IconButton(
-                icon: const Icon(Icons.arrow_forward),
-                iconSize: 20.0, // Set the icon size as per your requirement
-                onPressed: () {
-                },
-              ),
-            ],
-          ),
-        ),
-      ],
-      //
-
-    ),
-  ),
-    //     child:floatingActionButton: FloatingActionButton(
-    // child: const Icon(Icons.search),
-    // onPressed: () => showSearch(context: context, delegate: Search()),
-    // ),
-);
-
-        }
+      ),
+    );
+  }
 }
 
+class ServiceCard extends StatelessWidget {
+  final String title;
+  final String imageUrl;
+  final VoidCallback onTap;
+
+  const ServiceCard({
+    super.key,
+    required this.title,
+    required this.imageUrl,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        elevation: 4.0,
+        shape:
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        child: Column(
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(12.0)),
+                child: Image.network(
+                  imageUrl,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Container(
+              padding:
+              const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+              alignment: Alignment.center,
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Search extends StatelessWidget {
+  const Search({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Search Page'),
+      ),
+      body: const Center(
+        child: Text('Search Functionality Here'),
+      ),
+    );
+  }
+}
 
 class SecondPage extends StatelessWidget {
   final List<String> services = [
