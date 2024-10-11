@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const FirstPage(),
     SecondPage(),
-    ThirdPage(phoneNumber: '', location: '', firstname: '', email: '', workerId: '',),
+    YourBookingsPage( email: ''),
   ];
 
   @override
@@ -123,18 +123,42 @@ class FirstPage extends StatelessWidget {
               SizedBox(
                 height: 200,
                 child: PageView(
-                  children: [
-                    Image.network(
-                      'https://www.canva.com/design/DAGPchsntEE/WsV6u68ck_Gln3Xd76kMzQ/view?utm_content=DAGPchsntEE&utm_campaign=designshare&utm_medium=link&utm_source=editor',
-                      fit: BoxFit.cover,
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black, // Change color as needed
+                          width: 3.0,          // Change border width as needed
+                        ),
+                      ),
+                      child: Image.asset(
+                        'assets/images/Easy to find (2).png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                    Image.asset(
-                      'assets/images/image2.png',
-                      fit: BoxFit.cover,
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 3.0,
+                        ),
+                      ),
+                      child: Image.asset(
+                        'assets/images/Easy to find.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                    Image.asset(
-                      'assets/images/image3.png',
-                      fit: BoxFit.cover,
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 3.0,
+                        ),
+                      ),
+                      child: Image.asset(
+                        'assets/images/Easy to find (1).png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ],
                 ),
@@ -206,7 +230,7 @@ class FirstPage extends StatelessWidget {
                   ServiceCard(
                     title: 'Plumber',
                     imageUrl:
-                    'https://newvideomarketing.com/wp-content/uploads/2017/06/plumber_woman_animated.jpg',
+                    'https://cdn2.vectorstock.com/i/1000x1000/55/36/cartoon-plumber-repairing-a-pipe-vector-26985536.jpg',
                     onTap: () {
                       // Navigate to Plumber page
                     },
@@ -214,7 +238,7 @@ class FirstPage extends StatelessWidget {
                   ServiceCard(
                     title: 'Electrician',
                     imageUrl:
-                    'https://i.ytimg.com/vi/GlzvfaiJqqg/maxresdefault.jpg',
+                    'https://cdn4.vectorstock.com/i/1000x1000/19/53/cartoon-electrician-cable-man-vector-29651953.jpg',
                     onTap: () {
                       // Navigate to Electrician page
                     },
@@ -222,7 +246,7 @@ class FirstPage extends StatelessWidget {
                   ServiceCard(
                     title: 'Mechanic',
                     imageUrl:
-                    'https://clipartmag.com/images/mechanic-clipart-13.png',
+                    'https://as2.ftcdn.net/v2/jpg/05/69/90/77/1000_F_569907763_6JSDpoAAeyBjjyuP1eJWcfZ34aItK17U.jpg',
                     onTap: () {
                       // Navigate to Mechanic page
                     },
@@ -230,7 +254,7 @@ class FirstPage extends StatelessWidget {
                   ServiceCard(
                     title: 'Tutor',
                     imageUrl:
-                    'https://via.placeholder.com/150.png?text=Tutor+Image',
+                    'https://thumbs.dreamstime.com/b/english-language-arts-tutor-isolated-cartoon-vector-illustration-creative-writing-teacher-reading-comprehension-student-266155250.jpg',
                     onTap: () {
                       // Navigate to Tutor page
                     },
@@ -238,7 +262,7 @@ class FirstPage extends StatelessWidget {
                   ServiceCard(
                     title: 'Baby Sitter',
                     imageUrl:
-                    'https://via.placeholder.com/150.png?text=Baby+Sitter+Image',
+                    'https://c8.alamy.com/comp/2PT3PA9/babysitter-or-nanny-services-to-care-for-provide-for-baby-needs-and-play-with-children-on-flat-cartoon-hand-drawn-template-illustration-2PT3PA9.jpg',
                     onTap: () {
                       // Navigate to Baby Sitter page
                     },
@@ -511,107 +535,143 @@ class ThirdPage extends StatelessWidget {
   }
 
 }
-class FourthPage extends StatelessWidget {
-  final String firstname;
-  final String email;
-  final String phoneNumber;
-  final String location;
 
-  FourthPage({required this.phoneNumber, required this.location, required this.firstname, required this.email});
+// class FourthPage extends StatelessWidget {
+//   final String email;
+//
+//   FourthPage({required this.email});
+
+class YourBookingsPage extends StatefulWidget {
+  final String email; // The current user's email
+  const YourBookingsPage({super.key, required this.email});
+
+  @override
+  _YourBookingsPageState createState() => _YourBookingsPageState();
+}
+
+class _YourBookingsPageState extends State<YourBookingsPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Your Bookings'),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('bookings').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          // Filter bookings by checking if userEmail exists in the document
+          final bookings = snapshot.data!.docs.where((doc) {
+            final data = doc.data() as Map<String, dynamic>?;
+            return data != null && data.containsKey('userEmail') && data['userEmail'] == widget.email;
+          }).toList();
+
+          if (bookings.isEmpty) {
+            return const Center(child: Text('No bookings found.'));
+          }
+
+          return ListView.builder(
+            itemCount: bookings.length,
+            itemBuilder: (context, index) {
+              final bookingData = bookings[index].data() as Map<String, dynamic>;
+              return ListTile(
+                title: Text(bookingData['firstname'] ?? 'No Name'),
+                subtitle: Text(
+                  'Booked on: ${DateTime.fromMillisecondsSinceEpoch(bookingData['timestamp'].millisecondsSinceEpoch).toString()}',
+                ),
+                trailing: const Icon(Icons.arrow_forward),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BookingDetailsPage(
+                        bookingId: bookings[index].id,
+                        bookingData: bookingData,
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class BookingDetailsPage extends StatelessWidget {
+  final String bookingId;
+  final Map<String, dynamic> bookingData;
+
+  const BookingDetailsPage({super.key, required this.bookingId, required this.bookingData});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Booking'),
-        automaticallyImplyLeading: false, // Disable the default leading behavior
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            // Navigate to the specified page
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => FirstPage(),
-              ),
-            );
-          },
-        ),
+        title: const Text('Booking Details'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              // padding: const EdgeInsets.all(4.0),
-              width: double.infinity,
-              height: 30,
-              child: const Text(
-                'Worker Details:',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Worker Location:',
-              style: TextStyle(fontSize: 24,),
-            ),
-            SizedBox(height: 5),
-            Text(location, style: TextStyle(fontSize: 24,),),
-            SizedBox(height: 20),
-            Text(
-              'Worker Phone Number:',
-              style: TextStyle(fontSize: 24,),
-            ),
-            SizedBox(height: 5),
-            Text(phoneNumber, style: TextStyle(fontSize: 24,),),
-            SizedBox(height: 5),
+            Text('Name: ${bookingData['firstname']}', style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 8),
+            Text('Phone: ${bookingData['phonenumber']}', style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 8),
+            Text('Location: ${bookingData['location']}', style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 8),
+            Text('Email: ${bookingData['email']}', style: const TextStyle(fontSize: 18)),
+            const Spacer(),
             ElevatedButton(
               onPressed: () {
-                // Handle cancelling booking
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Cancel Booking'),
-                      content: Text('Are you sure you want to cancel the booking?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            // Perform cancel booking operation and navigate to FirstPage
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Booking cancelled')),
-                            );
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(builder: (context) => HomePage()),
-                                  (Route<dynamic> route) => false,
-                            );
-                          },
-                          child: Text('Yes'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            // Just navigate back to FirstPage without cancelling
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(builder: (context) => HomePage()),
-                                  (Route<dynamic> route) => false,
-                            );
-                          },
-                          child: Text('No'),
-                        ),
-                      ],
-                    );
-                  },
-                );
+                _showCancelDialog(context);
               },
-              child: Text('Cancel Booking'),
+              child: const Text('Cancel'),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void _showCancelDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Cancel Booking'),
+          content: const Text('Are you sure you want to cancel the booking?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss the dialog, stay on the page
+              },
+            ),
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () async {
+                await FirebaseFirestore.instance
+                    .collection('bookings')
+                    .doc(bookingId)
+                    .delete(); // Delete the booking
+
+                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); // Return to the previous page
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('The booking is canceled')),
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
