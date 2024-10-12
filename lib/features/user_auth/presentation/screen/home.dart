@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../../global/toast.dart';
 import 'intro.dart';
 import 'search.dart';
@@ -19,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const FirstPage(),
     SecondPage(),
-    YourBookingsPage( email: ''),
+    FourthPage( email: ''),
   ];
 
   @override
@@ -536,64 +537,76 @@ class ThirdPage extends StatelessWidget {
 
 }
 
-// class FourthPage extends StatelessWidget {
-//   final String email;
-//
-//   FourthPage({required this.email});
+class FourthPage extends StatefulWidget {
+  final String email;
 
-class YourBookingsPage extends StatefulWidget {
-  final String email; // The current user's email
-  const YourBookingsPage({super.key, required this.email});
+  FourthPage({required this.email});
 
   @override
-  _YourBookingsPageState createState() => _YourBookingsPageState();
+  _FourthPageState createState() => _FourthPageState();
 }
 
-class _YourBookingsPageState extends State<YourBookingsPage> {
+class _FourthPageState extends State<FourthPage> {
+  List<Booking> _userBookings = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserBookings();
+  }
+
+  Future<void> _fetchUserBookings() async {
+    try {
+      QuerySnapshot bookingsSnapshot = await FirebaseFirestore.instance.collection('bookings').get();
+
+      List<Booking> bookings = [];
+
+      for (QueryDocumentSnapshot bookingDoc in bookingsSnapshot.docs) {
+        // Fetch all documents in the subcollection for each bookingId
+        QuerySnapshot subCollectionSnapshot = await bookingDoc.reference.collection('subcollection').get();
+
+        for (QueryDocumentSnapshot subDoc in subCollectionSnapshot.docs) {
+          if (subDoc['userEmail'] == widget.email) {
+            bookings.add(Booking.fromMap(subDoc.data() as Map<String, dynamic>));
+          }
+        }
+      }
+
+      setState(() {
+        _userBookings = bookings;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching bookings: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Bookings'),
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('bookings').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          // Filter bookings by checking if userEmail exists in the document
-          final bookings = snapshot.data!.docs.where((doc) {
-            final data = doc.data() as Map<String, dynamic>?;
-            return data != null && data.containsKey('userEmail') && data['userEmail'] == widget.email;
-          }).toList();
-
-          if (bookings.isEmpty) {
-            return const Center(child: Text('No bookings found.'));
-          }
-
-          return ListView.builder(
-            itemCount: bookings.length,
-            itemBuilder: (context, index) {
-              final bookingData = bookings[index].data() as Map<String, dynamic>;
-              return ListTile(
-                title: Text(bookingData['firstname'] ?? 'No Name'),
-                subtitle: Text(
-                  'Booked on: ${DateTime.fromMillisecondsSinceEpoch(bookingData['timestamp'].millisecondsSinceEpoch).toString()}',
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _userBookings.isEmpty
+          ? const Center(child: Text('No bookings found'))
+          : ListView.builder(
+        itemCount: _userBookings.length,
+        itemBuilder: (context, index) {
+          final booking = _userBookings[index];
+          return NotificationContainer(
+            booking: booking,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BookingDetailsPage(booking: booking),
                 ),
-                trailing: const Icon(Icons.arrow_forward),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => BookingDetailsPage(
-                        bookingId: bookings[index].id,
-                        bookingData: bookingData,
-                      ),
-                    ),
-                  );
-                },
               );
             },
           );
@@ -603,36 +616,104 @@ class _YourBookingsPageState extends State<YourBookingsPage> {
   }
 }
 
-class BookingDetailsPage extends StatelessWidget {
-  final String bookingId;
-  final Map<String, dynamic> bookingData;
+class Booking {
+  final String firstname;
+  final String location;
+  final String email;
+  final Timestamp time;
 
-  const BookingDetailsPage({super.key, required this.bookingId, required this.bookingData});
+  Booking({
+    required this.firstname,
+    required this.location,
+    required this.email,
+    required this.time,
+  });
+
+  factory Booking.fromMap(Map<String, dynamic> map) {
+    return Booking(
+      firstname: map['firstname'] as String? ?? '',
+      location: map['location'] as String? ?? '',
+      email: map['userEmail'] as String? ?? '',
+      time: map['timestamp'] as Timestamp? ?? Timestamp.now(),
+    );
+  }
+
+  String get formattedTimestamp {
+    DateTime dateTime = time.toDate();
+    return DateFormat('MMMM d, yyyy at h:mm:ss a').format(dateTime);
+  }
+}
+
+class NotificationContainer extends StatelessWidget {
+  final Booking booking;
+  final VoidCallback onTap;
+
+  const NotificationContainer({super.key, required this.booking, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Worker Name: ${booking.firstname}'),
+                Text('Location: ${booking.location}'),
+                Text('User Email: ${booking.email}'),
+                Text('Date & Time: ${booking.formattedTimestamp}'),
+              ],
+            ),
+            const Icon(Icons.arrow_forward, color: Colors.blue),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class BookingDetailsPage extends StatelessWidget {
+  final Booking booking;
+
+  BookingDetailsPage({required this.booking});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Booking Details'),
+        title: Text('Booking Details'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Name: ${bookingData['firstname']}', style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 8),
-            Text('Phone: ${bookingData['phonenumber']}', style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 8),
-            Text('Location: ${bookingData['location']}', style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 8),
-            Text('Email: ${bookingData['email']}', style: const TextStyle(fontSize: 18)),
-            const Spacer(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Worker Name: ${booking.firstname}', style: TextStyle(fontSize: 18)),
+                SizedBox(height: 10),
+                Text('Location: ${booking.location}', style: TextStyle(fontSize: 18)),
+                SizedBox(height: 10),
+                Text('User Email: ${booking.email}', style: TextStyle(fontSize: 18)),
+                SizedBox(height: 10),
+                Text('Date & Time: ${booking.formattedTimestamp}', style: TextStyle(fontSize: 18)),
+              ],
+            ),
             ElevatedButton(
-              onPressed: () {
-                _showCancelDialog(context);
+              onPressed: () async {
+                await _cancelBooking(context, booking);
               },
-              child: const Text('Cancel'),
+              child: Text('Cancel Booking'),
             ),
           ],
         ),
@@ -640,38 +721,31 @@ class BookingDetailsPage extends StatelessWidget {
     );
   }
 
-  void _showCancelDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Cancel Booking'),
-          content: const Text('Are you sure you want to cancel the booking?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('No'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Dismiss the dialog, stay on the page
-              },
-            ),
-            TextButton(
-              child: const Text('Yes'),
-              onPressed: () async {
-                await FirebaseFirestore.instance
-                    .collection('bookings')
-                    .doc(bookingId)
-                    .delete(); // Delete the booking
+  Future<void> _cancelBooking(BuildContext context, Booking booking) async {
+    try {
+      QuerySnapshot bookingsSnapshot = await FirebaseFirestore.instance
+          .collection('bookings')
+          .where('userEmail', isEqualTo: booking.email)
+          .get();
 
-                Navigator.of(context).pop(); // Close the dialog
-                Navigator.of(context).pop(); // Return to the previous page
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('The booking is canceled')),
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
+      for (QueryDocumentSnapshot bookingDoc in bookingsSnapshot.docs) {
+        QuerySnapshot subCollectionSnapshot = await bookingDoc.reference.collection('subcollection').get();
+        for (QueryDocumentSnapshot subDoc in subCollectionSnapshot.docs) {
+          if (subDoc['userEmail'] == booking.email) {
+            await subDoc.reference.delete();
+          }
+        }
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Booking canceled successfully')),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      print('Error canceling booking: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error canceling booking')),
+      );
+    }
   }
 }
