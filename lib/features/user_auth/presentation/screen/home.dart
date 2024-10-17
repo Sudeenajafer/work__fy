@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../../../../global/toast.dart';
 import 'intro.dart';
 import 'search.dart';
@@ -20,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const FirstPage(),
     SecondPage(),
-    FourthPage( email: ''),
+    BookingListPage(),
   ];
 
   @override
@@ -443,39 +442,27 @@ class ThirdPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bookings',
+        title: const Text('Worker Details',
         style: TextStyle(fontSize: 30),),
       centerTitle: false,
-        automaticallyImplyLeading: false,  // Removes the back arrow
+        // automaticallyImplyLeading: false,  // Removes the back arrow
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              // padding: const EdgeInsets.all(4.0),
-              width: double.infinity,
-              height: 30,
-              child: const Text(
-                'Worker Details:',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
             const SizedBox(height: 20),
-            Text(
-              'Worker Location:',
-              style: TextStyle(fontSize: 24,),
-            ),
-            SizedBox(height: 5),
-            Text(location,style: TextStyle(fontSize: 24,),),
+            Text('Name: $firstname', style: TextStyle(fontSize: 18)),
             SizedBox(height: 20),
-            Text(
-              'Worker Phone Number:',
-              style: TextStyle(fontSize: 24,),
-            ),
-            SizedBox(height: 5),
-            Text(phoneNumber,style: TextStyle(fontSize: 24,),),
+            Text('Phone Number: $phoneNumber', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 20),
+            Text('Location: $location', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 20),
+            Text('Email: $email', style: TextStyle(fontSize: 18)),
+
+
+
           ],
         ),
       ),
@@ -536,216 +523,178 @@ class ThirdPage extends StatelessWidget {
   }
 
 }
-
-class FourthPage extends StatefulWidget {
-  final String email;
-
-  FourthPage({required this.email});
-
+class BookingListPage extends StatefulWidget {
   @override
-  _FourthPageState createState() => _FourthPageState();
+  _BookingListPageState createState() => _BookingListPageState();
 }
 
-class _FourthPageState extends State<FourthPage> {
-  List<Booking> _userBookings = [];
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchUserBookings();
-  }
-
-  Future<void> _fetchUserBookings() async {
-    try {
-      QuerySnapshot bookingsSnapshot = await FirebaseFirestore.instance.collection('bookings').get();
-
-      List<Booking> bookings = [];
-
-      for (QueryDocumentSnapshot bookingDoc in bookingsSnapshot.docs) {
-        // Fetch all documents in the subcollection for each bookingId
-        QuerySnapshot subCollectionSnapshot = await bookingDoc.reference.collection('subcollection').get();
-
-        for (QueryDocumentSnapshot subDoc in subCollectionSnapshot.docs) {
-          if (subDoc['userEmail'] == widget.email) {
-            bookings.add(Booking.fromMap(subDoc.data() as Map<String, dynamic>));
-          }
-        }
-      }
-
-      setState(() {
-        _userBookings = bookings;
-        _isLoading = false;
-      });
-    } catch (e) {
-      print('Error fetching bookings: $e');
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
+class _BookingListPageState extends State<BookingListPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
+    User? user = _auth.currentUser;
+
+    if (user == null) {
+      return Center(child: Text('User not logged in.'));
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Bookings'),
+        title: Text('Your Bookings',
+          style: TextStyle(fontSize: 30),
+        ),
+        centerTitle: false,
+        automaticallyImplyLeading: false,
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _userBookings.isEmpty
-          ? const Center(child: Text('No bookings found'))
-          : ListView.builder(
-        itemCount: _userBookings.length,
-        itemBuilder: (context, index) {
-          final booking = _userBookings[index];
-          return NotificationContainer(
-            booking: booking,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BookingDetailsPage(booking: booking),
-                ),
-              );
-            },
-          );
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _firestore
+            .collection('bookings')
+            .where('userEmail', isEqualTo: user.email)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No bookings found.'));
+          }
+
+                final bookings = snapshot.data!.docs;
+
+                return ListView.builder(
+                  itemCount: bookings.length,
+                  itemBuilder: (context, index) {
+                    var booking = bookings[index];
+                    var bookingId = booking.id;
+                    var firstname = booking['firstname'];
+                    var phoneNumber = booking['phoneNumber'];
+                    var location = booking['location'];
+                    var email = booking['email'];
+                    var timestamp = booking['timestamp'];
+                    Color backgroundColor = (index % 2 == 0)
+                        ? Colors.white
+                        : Colors.white;
+
+
+                    return Card(
+                      key: ValueKey(bookingId),
+                      color: Colors.white,
+                      elevation: 4,
+                      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                      child: ListTile(
+                        title: Text(
+                          '$firstname',
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                        subtitle: Text('Booked on: ${timestamp.toDate()}'),
+                        trailing: Icon(Icons.arrow_forward),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BookingDetailsPage(
+                                bookingId: bookingId,
+                                firstname: firstname,
+                                phoneNumber: phoneNumber,
+                                location: location,
+                                email: email,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                );
         },
       ),
     );
-  }
-}
 
-class Booking {
-  final String firstname;
-  final String location;
-  final String email;
-  final Timestamp time;
-
-  Booking({
-    required this.firstname,
-    required this.location,
-    required this.email,
-    required this.time,
-  });
-
-  factory Booking.fromMap(Map<String, dynamic> map) {
-    return Booking(
-      firstname: map['firstname'] as String? ?? '',
-      location: map['location'] as String? ?? '',
-      email: map['userEmail'] as String? ?? '',
-      time: map['timestamp'] as Timestamp? ?? Timestamp.now(),
-    );
-  }
-
-  String get formattedTimestamp {
-    DateTime dateTime = time.toDate();
-    return DateFormat('MMMM d, yyyy at h:mm:ss a').format(dateTime);
-  }
-}
-
-class NotificationContainer extends StatelessWidget {
-  final Booking booking;
-  final VoidCallback onTap;
-
-  const NotificationContainer({super.key, required this.booking, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Worker Name: ${booking.firstname}'),
-                Text('Location: ${booking.location}'),
-                Text('User Email: ${booking.email}'),
-                Text('Date & Time: ${booking.formattedTimestamp}'),
-              ],
-            ),
-            const Icon(Icons.arrow_forward, color: Colors.blue),
-          ],
-        ),
-      ),
-    );
   }
 }
 
 class BookingDetailsPage extends StatelessWidget {
-  final Booking booking;
+  final String bookingId;
+  final String firstname;
+  final String phoneNumber;
+  final String location;
+  final String email;
 
-  BookingDetailsPage({required this.booking});
+  BookingDetailsPage({
+    required this.bookingId,
+    required this.firstname,
+    required this.phoneNumber,
+    required this.location,
+    required this.email,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Booking Details'),
+        title: Text('Booking Details',style: TextStyle(fontSize: 30),
+      ),
+      centerTitle: false,
+      automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Worker Name: ${booking.firstname}', style: TextStyle(fontSize: 18)),
-                SizedBox(height: 10),
-                Text('Location: ${booking.location}', style: TextStyle(fontSize: 18)),
-                SizedBox(height: 10),
-                Text('User Email: ${booking.email}', style: TextStyle(fontSize: 18)),
-                SizedBox(height: 10),
-                Text('Date & Time: ${booking.formattedTimestamp}', style: TextStyle(fontSize: 18)),
-              ],
-            ),
+            SizedBox(height: 20),
+            Text('Name: $firstname', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 10),
+            Text('Phone: $phoneNumber', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 10),
+            Text('Location: $location', style: TextStyle(fontSize: 18)),
+            SizedBox(height: 10),
+            Text('Email: $email', style: TextStyle(fontSize: 18)),
+            Spacer(),
             ElevatedButton(
-              onPressed: () async {
-                await _cancelBooking(context, booking);
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('Cancel Booking'),
+                    content: Text('Are you sure you want to cancel this booking?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text('No'),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          await FirebaseFirestore.instance
+                              .collection('bookings')
+                              .doc(bookingId)
+                              .delete();
+
+                          Navigator.pop(context); // Close the dialog
+                          Navigator.pop(context); // Go back to the previous page
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('The booking is canceled.'),
+                            ),
+                          );
+                        },
+                        child: Text('Yes'),
+                      ),
+                    ],
+                  ),
+                );
               },
               child: Text('Cancel Booking'),
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(double.infinity, 50), // Full-width button
+              ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  Future<void> _cancelBooking(BuildContext context, Booking booking) async {
-    try {
-      QuerySnapshot bookingsSnapshot = await FirebaseFirestore.instance
-          .collection('bookings')
-          .where('userEmail', isEqualTo: booking.email)
-          .get();
-
-      for (QueryDocumentSnapshot bookingDoc in bookingsSnapshot.docs) {
-        QuerySnapshot subCollectionSnapshot = await bookingDoc.reference.collection('subcollection').get();
-        for (QueryDocumentSnapshot subDoc in subCollectionSnapshot.docs) {
-          if (subDoc['userEmail'] == booking.email) {
-            await subDoc.reference.delete();
-          }
-        }
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Booking canceled successfully')),
-      );
-      Navigator.pop(context);
-    } catch (e) {
-      print('Error canceling booking: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error canceling booking')),
-      );
-    }
   }
 }
