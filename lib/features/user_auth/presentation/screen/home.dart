@@ -580,7 +580,7 @@ class _BookingListPageState extends State<BookingListPage> {
 
                     return Card(
                       key: ValueKey(bookingId),
-                      color: Colors.white,
+                      color: backgroundColor,
                       elevation: 4,
                       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                       child: ListTile(
