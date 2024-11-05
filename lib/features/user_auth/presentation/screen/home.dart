@@ -51,37 +51,37 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
-      endDrawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const UserAccountsDrawerHeader(
-              accountName: Text('User Name'),
-              accountEmail: Text('user@example.com'),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.blue,
-                child: Text('U'),
-              ),
-            ),
-            const ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text('Profile'),
-            ),
-            const ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('signOut'),
-              onTap: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.pushNamed(context, "/login");
-                showToast(message: "Successfully signed out");
-              },
-            ),          ],
-        ),
-      ),
+      // endDrawer: Drawer(
+      //   child: ListView(
+      //     padding: EdgeInsets.zero,
+      //     children: <Widget>[
+      //       const UserAccountsDrawerHeader(
+      //         accountName: Text('User Name'),
+      //         accountEmail: Text('user@example.com'),
+      //         currentAccountPicture: CircleAvatar(
+      //           backgroundColor: Colors.blue,
+      //           child: Text('U'),
+      //         ),
+      //       ),
+      //       const ListTile(
+      //         leading: Icon(Icons.account_circle),
+      //         title: Text('Profile'),
+      //       ),
+      //       const ListTile(
+      //         leading: Icon(Icons.settings),
+      //         title: Text('Settings'),
+      //       ),
+      //       ListTile(
+      //         leading: const Icon(Icons.logout),
+      //         title: const Text('signOut'),
+      //         onTap: () {
+      //           FirebaseAuth.instance.signOut();
+      //           Navigator.pushNamed(context, "/login");
+      //           showToast(message: "Successfully signed out");
+      //         },
+      //       ),          ],
+      //   ),
+      // ),
       body:_pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
