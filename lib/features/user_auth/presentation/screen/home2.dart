@@ -246,6 +246,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
               ElevatedButton(
                 onPressed: () => _markWorkAsDone(context),
                 child: Text('Work Done'),
+
               ),
           ],
         ),
@@ -282,6 +283,14 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                     duration: Duration(seconds: 1),
                   ),
                 );
+
+                // If booking is rejected, delete it from Firebase
+                if (action == 'Reject') {
+                  deleteBooking(widget.booking);
+                  Navigator.of(context).pop(); // Go back to the previous page after marking as done
+
+
+                }
               },
             ),
           ],
@@ -290,24 +299,94 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
     );
   }
 
-  void _markWorkAsDone(BuildContext context) {
-    setState(() {
-      isWorkDone = true;
-    });
+  Future<void> deleteBooking(Booking booking) async {
+    try {
+      // Assuming each booking document has a unique ID, represented as `bookingId`
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('bookings')
+          .where('userEmail', isEqualTo: booking.userEmail)
+          .where('timestamp', isEqualTo: booking.time) // Use unique identifier like timestamp or bookingId
+          .get();
 
-    // Show snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Work marked as done!'),
-        duration: Duration(seconds: 1),
-      ),
-    );
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
 
-    // Delete the booking from Scheduled Task page
-    // This is where you would implement the logic to remove the booking
+      // Update UI after deletion
+      setState(() {
+        // Optionally, remove booking from local list if needed
+        // e.g., userBookings.remove(booking);
+      });
 
-    Navigator.of(context).pop(); // Go back to the previous page after marking as done
+      print('Booking deleted from Firebase');
+    } catch (e) {
+      print('Error deleting booking: $e');
+    }
   }
+
+  void _markWorkAsDone(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Complete Booking'),
+          content: Text('Are you sure you want to mark this booking as done?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+
+                // Perform the deletion and update UI
+                deleteBookings(widget.booking);
+                Navigator.of(context).pop(); // Close the dialog
+
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> deleteBookings(Booking booking) async {
+    try {
+      // Locate and delete the booking document from Firebase
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('bookings')
+          .where('userEmail', isEqualTo: booking.userEmail)
+          .where('timestamp', isEqualTo: booking.time) // Use timestamp or unique identifier
+          .get();
+
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
+
+      setState(() {
+        isWorkDone = true;
+      });
+
+      // Show a confirmation snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Work marked as done! Booking deleted.'),
+          duration: Duration(seconds: 1),
+        ),
+      );
+
+      // Navigate back to the Scheduled Task page
+
+    } catch (e) {
+      print('Error deleting booking: $e');
+    }
+  }
+
 }
 
 class WorkerProfilePage extends StatefulWidget {

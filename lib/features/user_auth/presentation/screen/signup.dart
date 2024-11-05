@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../../global/toast.dart';
 import '../../firebase_auth_implementation/firebase_auth_services.dart';
 import '../../widgets/form_container_widget.dart';
+import 'intro.dart';
 import 'login.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -38,7 +39,18 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text("SignUp"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navigate to the specified page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Myintro(child: null,),
+              ),
+            );
+          },
+        ),
       ),
       body: Center(
         child: Padding(

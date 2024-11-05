@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'home2.dart';
 import '../../widgets/form_container_widget.dart';
 import '../../../../global/toast.dart';
+import 'intro.dart';
 
 
 class LoginPage2 extends StatefulWidget {
@@ -23,8 +24,19 @@ class _LoginPage2State extends State<LoginPage2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
-        title: Text('Login'),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navigate to the specified page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Myintro(child: null,),
+              ),
+            );
+          },
+        ),
       ),
 
         body: Center(

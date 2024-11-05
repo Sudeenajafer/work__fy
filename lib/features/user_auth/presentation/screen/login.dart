@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../firebase_auth_implementation/firebase_auth_services.dart';
+import 'intro.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -35,8 +36,18 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text("Login"),
-      ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navigate to the specified page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Myintro(child: null,),
+              ),
+            );
+          },
+        ),      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
