@@ -560,7 +560,6 @@ class _BookingListPageState extends State<BookingListPage> {
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(child: Text('No bookings found.'));
           }
-
                 final bookings = snapshot.data!.docs;
 
                 return ListView.builder(
